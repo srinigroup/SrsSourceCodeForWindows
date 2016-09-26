@@ -1,0 +1,34 @@
+@(id: Long, productForm: Form[Product])
+
+@import helper._
+ @import helper.twitterBootstrap._
+
+
+@main{
+    
+    <h1>Edit Product</h1>
+    
+    
+   @helper.form(action = routes.Products.update(id)) {     
+        <fieldset>
+        
+            @helper.inputText(productForm("ean"), '_label -> "Product EAN")
+            @helper.inputText(productForm("name"), '_label -> "Product name")
+            @helper.inputText(productForm("description"), '_label -> "Product description")
+            
+           
+        
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" value="Save this Product" class="btn primary"> or 
+            <a href="@routes.Products.list()" class="btn">Cancel</a> 
+            <a href="@routes.Products.delete(id)" class="btn danger">Delete</a> 
+             
+        </div>
+        
+    }
+    
+   
+    
+}

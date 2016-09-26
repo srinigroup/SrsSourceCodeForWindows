@@ -1,0 +1,169 @@
+
+@(accountHolderForm: Form[AccountHolder], contactForm: Form[ContactInfo], addressForm: Form[Address] )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+
+
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("SUPPLIER","ALL")" class="btn btn-default">ACCOUNT HOLDER</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("ACCOUNT HOLDER","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+     
+@helper.form(action = routes.AccountHolders.save()) {
+
+	<!-- panel-group -->
+	<div class="panel-group" id="accordion">
+		
+		<!-- panel-primary 1-->
+   		<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionOne">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+            			AccountHolder Details
+            			<i class="icon-unlock icon-large pull-right"></i>
+             		</h4>
+             	</a>
+             	  
+        	</div>
+        	<div id="accordionOne" class="panel-collapse collapse in">
+          		<div class="panel-body">
+          			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+								<td> @select(
+					                accountHolderForm("store.id"), 
+					                options(Store.options), 
+					                '_label -> "Store", '_default -> "-- Choose a store --",
+					                '_showConstraints -> false
+					            	)
+								</td>
+								<td> @helper.inputText(accountHolderForm("accountHolder"), '_label -> "Account Holder Name")</td>
+							</tr>
+						</table>
+					</div>
+            	</div>
+        	</div>
+      	</div><!-- panel-primary 1 End-->
+      	
+      	<!-- panel-primary 2-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionTwo">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Contact Info
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionTwo" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+								<td>
+									 @helper.inputText(contactForm("phone1"), '_label -> "Phone :")
+								</td>
+								
+								<td>
+									 @helper.inputText(contactForm("email"), '_label -> "E-Mail :")
+								</td>
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 2 End-->
+      	
+      	<!-- panel-primary 3-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionThree">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Address
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionThree" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr colspan=2>
+								<td>
+									<p><label>Search Address</label>
+									<input class="text_field" id="addressid" name="searchAddress" type="text" value="" style="width:500px;" onblur="getParsedAddress();getSimilar();"/></p>
+									<p><label>Similar Addresses </label>
+				                  	<select class="text_field" id="similarAddressesid" name="similarAddresses" size="5" style="width:510px;" onchange="similarAddressesChange()" multiple></select></p>
+				                </td>
+								<td></td>
+							</tr>
+							<tr>
+								<td> @helper.inputText(addressForm("street"), '_label -> "Street")</td>
+								
+								<td> @helper.inputText(addressForm("city"), '_label -> "City :") </td>
+								
+							</tr>
+							<tr>
+								<td>@helper.inputText(addressForm("number"), '_label -> "Number :")  </td>
+								
+								
+								<td>
+									@helper.inputText(addressForm("state"), '_label -> "State :")
+								</td>
+							</tr>
+							<tr>
+								<td> @helper.inputText(addressForm("postalCode"), '_label -> "PostalCode :") </td>
+								
+								<td>  @helper.inputText(addressForm("country"), '_label -> "Country :") </td>
+								
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 3 End-->
+      	
+      	      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+    
+    </div><!-- panel-group End-->
+  
+}<!-- form end -->
+
+	</div>
+	</div>
+
+}<!-- main end -->

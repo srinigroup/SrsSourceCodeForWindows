@@ -1,0 +1,163 @@
+@(storeSupplierMappingList: List[SupplierMapping], currentSortBy: String, currentOrder: String, currentFilter: String)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.Shifts.storeSuppliersList(newPage, sortBy, order, currentFilter)
+    
+}
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+@main {
+    
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">SUPPLIER</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+  
+
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+    <div id="actions">
+        
+        <form action="@link(0, "name")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by Supplier name...">
+            <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-info">
+           </p>
+        </form>
+    </div>
+    
+    @if(storeSupplierMappingList.size() == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        <div class="table-responsive">
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+        		<thead style="background-color: gainsboro;">
+                <tr>
+                    @header("name", "Supplier name")
+                  
+                    @header("abn", "Supplier ABN")
+                    
+                    @header("Phone1", "Supplier Phone1")
+                      
+                    @header("description", "Supplier Email")
+                      
+                    <th>Payment Terms</th>
+                       
+                    <th>Payment Mode</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+                @for(supplierMapping <- storeSupplierMappingList) {
+                    <tr>
+                        <td>@supplierMapping.supplier.name</td>
+                        
+                       
+                        <td>
+                            @if(supplierMapping.supplier.abn == null) {
+                                <em>-</em>
+                            } else {
+                                @supplierMapping.supplier.abn
+                            }
+                        </td>
+                        
+                        
+                         
+                         <td>
+                            @if(supplierMapping.supplier.contactInfo.phone1 == null) {
+                                <em>-</em>
+                            } else {
+                                @supplierMapping.supplier.contactInfo.phone1 
+                            }
+                        </td>
+                      
+                         <td>
+                            @if(supplierMapping.supplier.contactInfo.email  == null) {
+                                <em>-</em>
+                            } else {
+                                @supplierMapping.supplier.contactInfo.email 
+                            }
+                        </td>
+                          <td>
+                            @if(supplierMapping.paymentTerms == null) {
+                                <em>-</em>
+                            } else {
+                                @Application.propertiesMap.get(supplierMapping.paymentTerms) 
+                            }
+                        </td>
+                        <td>
+                            @if(supplierMapping.paymentMode == null) {
+                                <em>-</em>
+                            } else {
+                              @Application.propertiesMap.get(supplierMapping.paymentMode)
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+         </table>
+       </div>       
+        
+    }
+    
+     </div>
+    </div>
+        
+}
+
+
+            

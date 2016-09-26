@@ -1,0 +1,151 @@
+@(dsrObject:DailySalesReconciliation, store: Store,terminal:Terminal )
+
+
+@import helper._ 
+@import helper.twitterBootstrap._
+
+
+<html>
+<head>
+ 
+<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")"> 
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/accordion.css")"> 
+        
+   		
+   		 <script type="text/javascript" src='@routes.Application.javascriptRoutes()'></script>
+   		 
+   		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+   		 <!-- <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"></script>-->
+   
+ 
+  <script>
+ 
+
+ function closeWindow1(){
+	
+		//alert("inside close window");
+		window.close();
+		}
+ </script>
+
+</head>
+<body>
+
+<center><h1>Terminal Summary</h1></center>
+
+
+<style>
+table {
+	height: 5px;
+    border: 1px solid black;
+    
+}
+</style>
+
+<div align="center">
+<TABLE BORDER="1" WIDTH="500" >
+<TR>
+<TD WIDTH=250 style="background-color:white">
+<TABLE BORDER="1" WIDTH="250">
+<TR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Media Takings</b>
+
+</TR>
+		<TR>
+			<TD align="middle" style="background-color:white"><b><u>Media</u></b></TD>
+			<TD align="middle" style="background-color:white"><b><u>Net Takings</u></b></TD>	
+		</TR>
+		
+		
+		@for(mediaTenderHead <- store.mediaTenderHeads) {
+                    <tr>
+                    	 <td style="background-color:white"> @mediaTenderHead.name</td>
+                        <td style="background-color:white">@Terminal.getMediaAmountLong(terminal.shifts, mediaTenderHead.name)</td>
+                                            
+                             
+              		 </tr>
+		}
+		
+		<tr>
+               			<td style="background-color:white">Payouts</td>
+               			<td style="background-color:white">@Terminal.getPayoutsByTerminal(terminal)</td>
+         </tr>
+         
+         @for(paymentTender <- store.paymentTenders) {
+                    <tr>
+                    	 <td style="background-color:white"> @paymentTender.name</td>
+                        <td style="background-color:white">@Terminal.getPaymentTendersByTerminal(terminal,paymentTender.name)</td>
+                                            
+                             
+              		 </tr>
+		}
+               		
+		<TR>
+			<TD align="middle" style="background-color:white"><b>Total Net Takings</b></TD>
+			<TD align="middle" style="background-color:white"><b>@Terminal.getTotalNetTakings(terminal)</b></TD>	
+		</TR>	
+			
+		
+
+
+
+</TABLE>
+</TD>
+<TD WIDTH="250" style="background-color:white">
+<TABLE BORDER="1">
+<TR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Account Totals</b>
+
+</TR>
+		
+		<TR>
+			<TD align="middle" style="background-color:white">Total Gross Sales</TD>
+			<TD align="middle" style="background-color:white">@Terminal.getSaleAmount("TOTALSALES",terminal.shifts)</TD>	
+		</TR>
+		
+		<TR>
+			<TD align="middle" style="background-color:white">- Overs/Shorts</TD>
+			<TD align="middle" style="background-color:white">@Terminal.getTotalShiftVariance(terminal.shifts)</TD>	
+		</TR>
+		
+		<TR>
+			<TD align="middle" style="background-color:white">- Customer Invoices</TD>
+			<TD align="middle" style="background-color:white">@Terminal.getSaleAmount("ACCOUNT SALES",terminal.shifts)</TD>	
+		</TR>
+		
+		<TR>
+			<TD align="middle" style="background-color:white">+ POS Payments</TD>
+			<TD align="middle" style="background-color:white">@Terminal.getSaleAmount("ACCOUNT RECV",terminal.shifts) </TD>	
+		</TR>
+		
+		<TR>
+			<TD align="middle" style="background-color:white"><b>Net POS Takings</b></TD>
+			<TD align="middle" style="background-color:white"><b>@Terminal.getNetPOSTakings(terminal)</b></TD>	
+		</TR>
+		
+		
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+</div>
+
+
+	<section id="acc6" style="height:auto; ">
+<p class="accnav">
+
+
+
+</p>
+
+</section>
+</article>
+		 <center><input type="button" value="Close" CLASS="btn primary" onclick="closeWindow1()"/></center>
+</body>
+</html>

@@ -1,0 +1,155 @@
+@(page : String,store : Store)
+
+
+
+@link(action:String) = @{
+
+    
+   
+    var url = page+"_"+action
+   	url
+    
+}
+
+
+@display()= @{
+
+var result = "";
+
+		if(DailyReconciliations.getOPENStatus(store.id)){
+		   result = "disabled";
+		}							  
+
+result;
+}
+@main{
+
+        <div class="wrapper">
+            <div class="container" >
+                <div class="row">
+                    <div class="span12">
+       
+       					<span>
+        					<div id="bc1" class="btn-group btn-breadcrumb">
+            					<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            					<a href="#" class="btn btn-default">@page</a>
+            				</div>
+            			</span>
+         				<span class="pull-right" style="padding-right:50px;">
+           					<div>
+            					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+        					</div>
+        				</span>
+        			</div>
+        		</div>      
+            
+                     	<br><br>
+            
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row  row-fluid">
+                                     <div class="col-sm-6 col-md-6">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>ADD</b></div>
+                                				<div class="panel-body">
+				                                    <a href="#myModal" data-toggle="modal"><img src="@routes.Assets.at("images/tabImages/add.png")" class="img-responsive center-block" alt="Image" style="width:15%">
+				                                        <p class="text-muted">
+				                                            profit</p>
+				                                    </a>
+				                                     </div>
+										   		</div> 
+										  	</div>
+                                <div class="col-sm-6 col-md-6">
+									<div class="panel panel-success" >
+									 	<div class="panel-heading"><b>VIEW</b></div>
+                                			<div class="panel-body">
+			                                 	<a href="@routes.Application.showOptions(page,"VIEW")"><img src="@routes.Assets.at("images/tabImages/view.jpg")" class="img-responsive center-block" alt="Image" align="middle"  style="width:25%">
+			                                        <p class="text-muted" style="margin-top:5px;">
+			                                          New Users</p>
+			                                    </a>
+			                                     </div>
+										   		</div> 
+										  	</div>                
+                                   
+                                </div>
+                       		</div>
+                    	</div> <!-- content -->
+                        
+                        
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	<div class="col-sm-6 col-md-6">
+									<div class="panel panel-success" >
+									 	<div class="panel-heading"><b>MODIFY</b></div>
+                                			<div class="panel-body">
+			                                    <a href="@routes.Application.showOptions(page,"MODIFY")"><img src="@routes.Assets.at("images/tabImages/modify.png")" class="img-responsive center-block" alt="Image" align="middle"  style="width:15%">
+			                                        <p class="text-muted" style="margin-top:10px;">
+			                                             Growth</p>
+			                                    </a>
+                                       </div>
+							   		</div> 
+							  	</div>
+                                    @if((session.get("role")).contains("sa")){
+                                  <div class="col-sm-6 col-md-6">
+									<div class="panel panel-success" >
+									 	<div class="panel-heading"><b>DELETE</b></div>
+                                			<div class="panel-body">
+			                                    <a href="@routes.Application.showOptions(page,"DELETE")"><img src="@routes.Assets.at("images/tabImages/delete.png")" class="img-responsive center-block" alt="Image" align="middle" style="width:15%">
+                                        <p class="text-muted" style="margin-top:30px;">
+                                            New Users</p>
+                                    </a>   
+                                       </div>
+							   		</div> 
+							  	</div>
+                                    }
+                                                     
+                                   
+                                                                      
+                                </div>
+                             </div>
+                         </div> <!-- content -->
+                                   
+				        <div class="footer">
+				          <hr/>   
+				            <div class="container">
+				               <p  class="pull-right"> <b class="copyright">&copy; 2015 SRINI Group &nbsp;</b>All rights reserved.</p>
+				            </div>
+				        </div>
+        
+       
+      
+				      <!-- Model  start-->
+				
+						<div
+						id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+						aria-hidden="true" style="background-color: rgba(0, 0, 0,0.3);">
+						    <div class="modal-dialog" style="margin-top:8%">
+						        <div class="modal-content">
+						            <div class="modal-header" style="padding:0px;">
+						                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="font-size:30px;font-weight:200;line-height: 1;color:blue;margin-right:30px;">×</button>
+						                	<h3 id="myModalLabel" style="text-align:center;">DAILY RECONCILIATION</h3>
+						
+						            </div>
+						            <div class="modal-body" style="  width: 100%; padding-right: 0px; padding-left: 0px;">
+						               
+								          <a class="btn btn-primary" style="margin-left:30%;" id="add" href="@routes.DailyReconciliations.showBlank(store.id)" @display>Add DailyReconciliation</a>
+								           <hr style="width:100%"/>
+								           <!--  <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>  -->
+								         
+						            </div>
+						            
+						        </div>
+						    </div>
+						    </div>
+				      
+				 		 <!-- Model  end-->
+				 		 
+				 		 
+					</div> <!-- span 12 -->
+        		</div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+ 
+    
+    }

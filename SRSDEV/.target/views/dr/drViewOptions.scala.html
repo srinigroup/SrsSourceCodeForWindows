@@ -1,0 +1,205 @@
+@(currentPage: com.avaje.ebean.Page[DailyReconciliation], currentSortBy: String, currentOrder: String, currentFilter: String, pageAction: String, startDate:String, endDate:String, storeId:Long)
+
+@checkSelected(id:Long) = @{
+
+	var result = "";
+	
+	if(id==storeId){
+       	
+       	result = "selected";
+       	}
+    
+    result
+
+
+}
+
+
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@main {
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">DR VIEW</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+	
+	
+	
+    <div id="actions">
+     	
+     	<form action="@routes.DailyReconciliations.drViewOptions(0,"reportingBusinessDate","desc","SUBMITTED","VIEW")" method="GET">
+     		
+     		<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="storeId">Select Store</label>
+									<div class="input">
+										<select name="storeId" id="searchbox" required>
+						            		<option class="blank" value="">-- Choose a Store --</option>
+						  					@for(store <- Stores.getStoresList()){
+						  						<option value="@store.id" @checkSelected(store.id)>@store.name</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+							<div class="clearfix  " id="date_field">
+		    					<label for="date">Start Date</label>
+		    					<div class="input">
+		        					<input type="text" name="drStartDate" value="@startDate" class="startDatePicker" required />
+		    					</div>
+							</div>
+						</td>
+						
+						<td>
+							<div class="clearfix  " id="endDate_field">
+		    					<label for="endDate">End Date</label>
+		    					<div class="input">
+		        					<input type="text" name="drEndDate" value="@endDate" class="endDatePicker" required />
+		    					</div>
+							</div>
+						</td>
+						
+					  	<td>
+            					<input type="submit" id="searchsubmit" value="View" class="btn btn-primary" style="margin-top:7px">
+					  	</td>
+     					
+            		</tr>
+            	</table>
+            </div>
+    
+        </form>
+        
+        
+    </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Created Date</th>
+                  
+                    <th>Reporting Business Date</th>
+                    
+                       
+                    
+                    
+                      <th>Store Name</th>
+                      
+                        <th>Cash in Safe</th>
+                        
+                         <th>Cheques in Safe</th>
+                         
+                         <th>Total Sales Reported</th>
+                      
+                       <th>Status</th>
+                       
+                      
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+                @for(dsr <- currentPage.getList) {
+                    <tr>
+                        <td><a href="@routes.DailyReconciliations.edit(dsr.id,flash.get("pageAction"))">@currentDateFormat(dsr.createDate)</a></td>
+                       
+                       
+                        <td>
+                            @if(dsr.reportingBusinessDate == null) {
+                                <em>-</em>
+                            } else {
+                            
+                            	@currentDateFormat(dsr.reportingBusinessDate)
+                               
+                            }
+                        </td>
+                        
+                        
+                         
+                         <td>
+                            @if(dsr.store.name == null) {
+                                <em>-</em>
+                            } else {
+                                @dsr.store.name  
+                            }
+                        </td>
+                      
+                         <td>
+                            @if(dsr.open_cash  == null) {
+                                <em>-</em>
+                            } else {
+                              @dsr.close_cash
+                               
+                            }
+                        </td>
+                        <td>
+                            @if(dsr.open_cheque == null) {
+                                <em>-</em>
+                            } else {
+                                @dsr.close_cheque
+                               
+                            }
+                        </td>
+                       	 	<td>
+								@DailySalesReconciliation.getTotalSalesAmount(dsr.dsr)
+							</td>
+                          <td>
+                            @if(dsr.status == null) {
+                                <em>-</em>
+                            } else {
+                                @dsr.status 
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+		</div>
+        
+    }
+        
+       
+       </div>
+	</div>
+       
+}
+
+               

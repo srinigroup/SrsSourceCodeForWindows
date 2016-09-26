@@ -1,0 +1,115 @@
+@import helper._ 
+@import helper.twitterBootstrap._
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script> 
+	    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/ui-darkness/jquery-ui.min.css" rel="stylesheet">
+  <style>
+    .datepicker{
+     
+    }
+  </style>
+  
+@* <script>
+
+ 
+	 
+	function enableThursday(date) {
+
+		  var day = date.getDay();
+		 // If day == 1 then it is MOnday
+		 if (day == 4) {
+		 
+		 return [true] ; 
+		 
+		 } else { 
+		 
+		 return [false] ;
+		 }
+  
+	}
+	
+	 $(function() {
+		 $( ".datepicker" ).datepicker({
+		 beforeShowDay: enableThursday,dateFormat: "dd/mm/yy"
+		 });
+	 });
+</script>*@
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">HEAD OFFICE TIMESHEET</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.Timesheets.getHeadOfficeTimesheets()) {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+					  	<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="empId">Select Employee</label>
+									<div class="input">
+										<select name="empId" required>
+						            		<option class="blank" value="">-- Choose a Employee --</option>
+						  					@for(employee <- Employee.getHeadOfficeEmployee(1)){
+							  						<option value="@employee.id">@employee.firstName@employee.lastName</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+					  		<div class="clearfix" id="timesheetStartDate_field">
+								<label for="timesheetStartDate">Start Date</label>
+									<div class="input">
+										<input type="text" name="timesheetStartDate" class="startDatePicker" required  />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+					  		<div class="clearfix" id="timesheetEndtDate_field">
+								<label for="timesheetEndDate">End Date</label>
+									<div class="input">
+										<input type="text" name="timesheetEndDate" class="endDatepicker" required  />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            		</tr>
+            	</table>
+         	</div>
+		
+        <center><input type="submit" value="Get Timesheets" class="btn btn-primary"></center>
+        
+        
+	
+	} <!-- form ends -->
+		</div>
+	</div>
+	
+} <!-- main ends -->

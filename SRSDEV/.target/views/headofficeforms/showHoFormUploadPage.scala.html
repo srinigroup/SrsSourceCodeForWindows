@@ -1,0 +1,82 @@
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">UPLOAD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	@*id added for preventing button from double click and id name same as shift summary page button to avoid excess code*@
+	
+	@helper.form(action = routes.HoForms.uploadHoFormsByHeadOffice(),'enctype -> "multipart/form-data" ,'id -> "shiftSummaryForm") {
+	 <div class="panel panel-default">
+    <div class="panel-heading" style="background-color:lightcoral;font-size:17px;color: #fff;"><b style="color:#fff">Upload Head Office Forms :</b></div>
+    <div class="panel-body" style="background-color: white;border-color: #fff;">
+			<div class="table-responsive">
+  				<table @*style="background-color: white;border-color: #fff;"*@ class="table table-bordered">
+  					<tr>
+            			<td>
+            				<div class="clearfix" id="formType_field">
+								<label for="formType">Form Type</label>
+									<div class="input">
+										<select id="formType" name="formType" required>
+						            		<option class="blank" value="">-- Choose a Form Type --</option>
+						  					<option value="Super Annuation">Super Annuation</option>
+						  					<option value="TFN">TFN</option>
+						  					<option value="Payroll Form">Payroll Form</option>
+						  					<option value="Sira Blank">Sira Blank</option>
+						  					<option value="Others">Others</option>
+						  					
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+            				<div class="clearfix" id="hoForm_field">
+							<label  for="file-upload" >Select File</label>
+									<div class="input">
+										<input type="file" id="hoFormFiles" name="hoFormFiles" style="background-color:#333;color:#fff;font-size:16px;"  accept="application/pdf" multiple="multiple" onchange="HoFormUpdateList(this)" required />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            		</tr>
+            	</table>
+         	</div>
+		</div>
+      </div>
+        
+         <span id="displaySelected" style="display:none;"><b>Selected Form Details:</b></span>
+		<div id="fileList" style="background-color: white;border-color: #fff;"></div><br/>
+		
+       <center><input type="submit" value="Upload" id="upload" class="btn btn-primary"></center>
+        
+	} <!-- form ends -->
+	
+	<a href="@routes.HoForms.getAllHeadOfficeForms()" class="pull-right btn btn-success">Uploaded invoices</a>
+		</div>
+	</div>
+	
+} <!-- main ends -->

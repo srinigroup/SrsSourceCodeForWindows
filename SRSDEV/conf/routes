@@ -1,0 +1,331 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           						controllers.Application.index()
+
+GET     /showOptions/:page/:action                         	controllers.Application.showOptions(page:String,action:String)
+
+
+
+##################### Authentication Page ###############################################
+
+GET     /login                              				controllers.Application.login()
+POST    /login                              				controllers.Application.authenticate()
+GET     /logout                             				controllers.Application.logout()
+
+
+# Map static resources from the /public folder to the /assets URL path
+
+########## for Tomcat ######################
+#GET     /SRSFiles/*file               						controllers.Assets.at(path="/webapps", file)
+
+########### for play #################
+
+GET     /assets/*file               						controllers.Assets.at(path="/public", file)
+
+
+##################### User Registration Page ###############################################
+
+GET   /users/           									controllers.Users.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+#GET  /users/           									controllers.Users.list()
+GET   /users/new        									controllers.Users.showBlank() 
+POST  /users/:id           									controllers.Users.update(id:Long)
+GET   /users/:id          									controllers.Users.edit(id:Long,action ?= "ALL")
+GET   /users/:id/delete    									controllers.Users.delete(id:Long)
+
+POST /users/           										controllers.Users.register()
+POST  /users/changePassword/:id         					controllers.Users.changePassword(id:Long) 
+GET  /users/verfiyPassword/:id         						controllers.Application.verifyCurrentPassword(id:Long, currPwd : String)
+
+##################### Sample Products Page ###############################################
+# Edit existing products
+GET  /products/new        									controllers.Products.showBlank() 
+GET  /products/:id             							controllers.Products.edit(id:Long)
+POST /products/:id              							controllers.Products.update(id:Long)
+GET  /products/:id/delete     								controllers.Products.delete(id:Long) 
+
+#GET /products/           									controllers.Products.list()
+GET  /products/            									controllers.Products.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
+
+#GET /products/:ean       									controllers.Products.show(ean:Long) 
+POST /products/          									controllers.Products.save()
+
+##################### Company Page ###############################################
+
+GET   /companies/           								controllers.Companies.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+#GET  /companies/           								controllers.Companies.list()
+GET   /companies/new        								controllers.Companies.showBlank() 
+POST  /companies/:id 								        controllers.Companies.update(id:Long)
+GET   /companies/:id          								controllers.Companies.edit(id:Long,action ?= "ALL")
+GET   /companies/:id/delete    								controllers.Companies.delete(id:Long)
+
+POST /companies/           		controllers.Companies.save()
+##################### Employee Page ###############################################
+
+GET   /employees/           								controllers.Employees.list(p:Int ?= 0, s ?= "first_name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /employees/byStore         							controllers.Employees.listForFilterByStore(p:Int ?= 0, s ?= "store_name", o ?= "asc", sn ?= "", pg ?= "VIEW")
+
+#GET  /employees/           								controllers.Employees.list()
+GET   /employees/new        								controllers.Employees.showBlank() 
+POST  /employees/:id            							controllers.Employees.update(id:Long)
+GET   /employees/:id           								controllers.Employees.edit(id:Long,action ?= "ALL")
+GET   /employees/:id/delete     							controllers.Employees.delete(id:Long)
+GET   /employees/:id/myProfile     							controllers.Employees.myProfile(id:Long)
+
+POST /employees/           									controllers.Employees.save()
+
+##################### Stores Page ###############################################
+
+GET  /stores/                 								controllers.Stores.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET  /stores/new             								controllers.Stores.showBlank() 
+POST /stores/:id             								controllers.Stores.update(id:Long)
+GET  /stores/:id           									controllers.Stores.edit(id:Long,action ?= "ALL")
+GET  /stores/:id/delete      								controllers.Stores.delete(id:Long)
+POST /Stores/                   							controllers.Stores.save()
+
+##################### Supplier Page ###############################################
+
+GET  /suppliers/                							controllers.Suppliers.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET  /suppliers/new            							    controllers.Suppliers.showBlank() 
+POST /suppliers/:id             							controllers.Suppliers.update(id:Long)
+GET  /suppliers/:id             							controllers.Suppliers.edit(id:Long,action ?= "ALL")
+GET  /suppliers/:id/delete     								controllers.Suppliers.delete(id:Long)
+POST /suppliers/                							controllers.Suppliers.save()
+GET  /suppliers/getSuppliers/:search              			controllers.Suppliers.getSuppliers(search:String,headOffice:String)
+GET  /suppliers/getSupplierMappings/:storeId/:suppid       	controllers.Application.getSupplierMapping(storeId:Long,suppid:Long)
+GET  /suppliers/deleteSupplierMappings/:suppMappingId     	controllers.Application.deleteSupplierMapping(suppMappingId:Long)
+
+
+GET  /payouts/getPayout/:paytype/:sid/:supid      			controllers.Application.getPayout(paytype:String,sid:Long,supid:Long)
+GET  /payouts/deletePayout/:pid                   			controllers.Application.deletePayout(pid:Long)
+
+##GET /timesheets/getTimesheet/:empId/:weekDate     		controllers.Application.getTimesheetDetails(empId:Long,weekDate:String)
+
+GET   /payrolls/addPayroll/:empId/:weekDate/:drId			controllers.Application.addPayroll(empId:Long,weekDate:String,drId:Long)
+GET   /payrolls/deletePayroll/:pid                   		controllers.Application.deletePayroll(pid:Long)
+
+GET   /javascriptRoutes     controllers.Application.javascriptRoutes
+##################### SalesHead Page ###############################################
+
+GET    /salesheads/             							controllers.SalesHeads.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET    /salesheads/new           							controllers.SalesHeads.showBlank() 
+POST   /salesheads/:id           							controllers.SalesHeads.update(id:Long)
+GET    /salesheads/:id          							controllers.SalesHeads.edit(id:Long,action ?= "ALL")
+GET   /salesheads/:id/delete    							controllers.SalesHeads.delete(id:Long)
+POST  /salesheads/               							controllers.SalesHeads.save()
+
+
+##################### TerminalHead Page ###############################################
+
+GET    /terminalheads/             							controllers.TerminalHeads.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+
+GET   /terminalheads/new          							controllers.TerminalHeads.showBlank() 
+POST  /terminalheads/:id           							controllers.TerminalHeads.update(id:Long)
+GET   /terminalheads/:id           							controllers.TerminalHeads.edit(id:Long,action ?= "ALL")
+GET   /terminalheads/:id/delete    							controllers.TerminalHeads.delete(id:Long)
+POST  /terminalheads/               						controllers.TerminalHeads.save()
+
+
+
+##################### TotalSalesHead Page ###############################################
+
+GET    /totalsalesheads/             						controllers.TotalSalesHeads.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
+GET   /totalsalesheads/new           						controllers.TotalSalesHeads.showBlank() 
+POST  /totalsalesheads/:id           						controllers.TotalSalesHeads.update(id:Long)
+GET   /totalsalesheads/:id           						controllers.TotalSalesHeads.edit(id:Long)
+GET   /totalsalesheads/:id/delete    						controllers.TotalSalesHeads.delete(id:Long)
+POST /totalsalesheads/               						controllers.TotalSalesHeads.save()
+
+
+##################### ExpenseHead Page ###############################################
+
+GET    /expenseheads/             							controllers.ExpenseHeads.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET    /expenseheads/new           							controllers.ExpenseHeads.showBlank() 
+POST   /expenseheads/:id           							controllers.ExpenseHeads.update(id:Long)
+GET    /expenseheads/:id           							controllers.ExpenseHeads.edit(id:Long,action ?= "ALL")
+GET    /expenseheads/:id/delete    							controllers.ExpenseHeads.delete(id:Long)
+POST  /expenseheads/               							controllers.ExpenseHeads.save()
+
+
+
+##################### MediaTender Page ###############################################
+
+GET    /mediatenders/             							controllers.MediaTenders.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /mediatenders/new           							controllers.MediaTenders.showBlank() 
+POST  /mediatenders/:id           							controllers.MediaTenders.update(id:Long)
+GET   /mediatenders/:id           							controllers.MediaTenders.edit(id:Long,action ?= "ALL")
+GET   /mediatenders/:id/delete    							controllers.MediaTenders.delete(id:Long)
+POST  /mediatenders/               							controllers.MediaTenders.save()
+
+
+##################### MediaTender Page ###############################################
+
+GET    /paymentTenders/             						controllers.PaymentTenders.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "", pg ?= "VIEW")
+
+GET   /paymentTenders/new           						controllers.PaymentTenders.showBlank() 
+POST  /paymentTenders/:id           						controllers.PaymentTenders.update(id:Long)
+GET   /paymentTenders/:id           						controllers.PaymentTenders.edit(id:Long,action ?= "ALL")
+GET   /paymentTenders/:id/delete    						controllers.PaymentTenders.delete(id:Long)
+POST  /paymentTenders/               						controllers.PaymentTenders.save()
+
+
+#################### DailySalesReconciliations Page ###############################################
+
+GET   /dsrs/                 								controllers.DailySalesReconciliations.list(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "OPEN", pg ?= "VIEW")
+GET   /dsrs/new/:id              							controllers.DailySalesReconciliations.showBlank(id:Long)
+POST  /dsrs/:id              								controllers.DailySalesReconciliations.update(id:Long)
+GET   /dsrs/:id             								controllers.DailySalesReconciliations.edit(id:Long,action ?= "ALL")
+GET   /dsrs/:id/delete       								controllers.DailySalesReconciliations.delete(id:Long)
+
+POST  /dsrs/:id/save                 						controllers.DailySalesReconciliations.save(id:Long)
+
+#################### DailyReconciliations Page ###############################################
+
+GET   /drs/                 								controllers.DailyReconciliations.list(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "OPEN", pg ?= "VIEW")
+GET   /drs/listByDate                 						controllers.DailyReconciliations.listByDate(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /drs/new/:id              							controllers.DailyReconciliations.showBlank(id:Long)
+POST  /drs/:id              								controllers.DailyReconciliations.update(id:Long)
+GET   /drs/:id            		 							controllers.DailyReconciliations.edit(id:Long,action ?= "ALL")
+GET   /drs/:id/delete       								controllers.DailyReconciliations.delete(id:Long)
+
+POST  /drs/:id/save                 						controllers.DailyReconciliations.save(id:Long)
+GET  /drs/summary/:id/:weekDate     						controllers.DailyReconciliations.summary(id:Long,weekDate:String)
+GET   /drsdrViewOptions/:action             				controllers.DailyReconciliations.drViewOptions(p:Int ?= 0, s ?= "reportingBusinessDate", o ?= "desc", f ?= "SUBMITTED", action:String)
+
+#################### Store - Terminals Page ###############################################
+
+##GET   /terminals/                 						controllers.Terminals.list()
+##GET   /terminals/new/:sid/:tid   							controllers.Terminals.showBlank(sid:Long, tid:Long) 
+POST  /terminals/:id              							controllers.Terminals.update(id:Long)
+##GET   /terminals/:id/:sid         						controllers.Terminals.edit(id:Long, sid:Long)
+GET   /terminals/:id/delete       							controllers.Terminals.delete(id:Long)
+POST  /terminals/                   						controllers.Terminals.save()
+GET  /terminals/:id/:thead                   				controllers.Terminals.summary(id:Long, thead:String)
+
+
+##################### Shifts Page ###############################################
+
+GET   /shifts/                      						controllers.Shifts.list(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "OPEN", pg ?= "VIEW")
+GET   /shifts/new/:sid/:action             					controllers.Shifts.showBlank(sid:Long, thead:String, action: String) 
+POST  /shifts/edit/:id/:sid/:action              			controllers.Shifts.update(id:Long, sid:Long, action: String)
+GET   /shifts/:id/:sid             				 			controllers.Shifts.edit(id:Long, sid:Long, action ?= "ALL")
+GET   /shifts/:id/delete            						controllers.Shifts.delete(id:Long)
+POST  /shifts/:id/:sid/:action                    			controllers.Shifts.save(id:Long, sid:Long, action: String)
+POST  /shifts/:id                    						controllers.Shifts.submit(id:Long)
+##POST  /shifts/saveShiftSales         						controllers.Shifts.saveShiftSales()
+GET   /shifts/storeSuppliers         						controllers.Shifts.storeSuppliersList(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
+
+##################### Timesheets Page ###############################################
+
+
+GET   /timesheets/                     		 				controllers.Timesheets.list(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /timesheets/new/:sid       							controllers.Timesheets.showBlank(sid:Long)
+POST  /timesheets/:sid            							controllers.Timesheets.save(sid:Long)
+GET  /timesheets/:tid/:sid              					controllers.Timesheets.edit(tid:Long, sid:Long,action ?= "ALL")
+POST  /timesheets/edit/:tid/:sid            				controllers.Timesheets.update(tid:Long,sid:Long)
+GET   /timesheets/delete/:id            					controllers.Timesheets.delete(id:Long)
+
+###### for role sk ,Timesheets  ###########
+		
+GET   /timesheetsForsk/                  					controllers.Timesheets.listForsk(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /timesheetsForsk/new/:sid       		 				controllers.Timesheets.showBlankForsk(sid:Long)
+POST  /timesheetsForsk/:sid            						controllers.Timesheets.saveForsk(sid:Long)
+GET  /timesheetsForsk/:tid/:sid              				controllers.Timesheets.editForsk(tid:Long, sid:Long,action ?= "ALL")
+POST  /timesheetsForsk/edit/:tid/:sid           			controllers.Timesheets.updateForsk(tid:Long,sid:Long)
+
+GET	 	/timesheetProcessing/showSelectPage					controllers.Timesheets.showSelectPage()
+POST	/timesheetProcessing/timesheetList					controllers.Timesheets.getTimesheets()
+GET	 	/timesheetProcessing/showSelectPageForSK/:sid		controllers.Timesheets.showSelectPageForSK(sid:Long)
+
+##################### Head Office Timesheets Page ###############################################
+
+
+GET   /timesheetsForHeadOffice/headOfficeNew/:sid       		 							controllers.Timesheets.showBlankForHeadOffice(sid:Long)
+GET   /timesheetsForHeadOffice/saveTimeSheetHours/:empId                					controllers.Application.getTimeSheetSave(empId:Long,date:String,startTimeHour:String,startTimeMin:String,endTimeHour:String,endTimeMin:String,duration:String,textArea:String,leaveType:String)
+POST  /timesheetsForHeadOffice/:sid/:empId            										controllers.Timesheets.saveForHeadOfficeTimeSheet(sid:Long,empId:Long)
+GET   /timesheetsForHeadOffice/                  											controllers.Timesheets.listForHeadOffice(p:Int ?= 0, s ?= "status", o ?= "asc", f ?= "", pg ?= "VIEW")
+GET   /timesheetsForHeadOffice/:tid/:sid              										controllers.Timesheets.editFormForHeadOffice(tid:Long, sid:Long,action ?= "ALL")
+GET	  /timesheetsForHeadOffice/showSelectPageForHeadOfficeTimeSheet/						controllers.Timesheets.showSelectPageForHeadOfficeTimeSheet()
+POST  /timesheetProcessing/headOfficeTimesheetList/											controllers.Timesheets.getHeadOfficeTimesheets()
+
+
+
+
+##################### Reports Page ###############################################
+
+GET   	/reports/                     		 				controllers.Reports.getReportHome()
+GET   	/reports/Store                     		 			controllers.Reports.getReportHomeForStore()
+POST   	/reports/getReport/             					controllers.Reports.getReport()
+
+
+##################AccountHolder Page ##############################################
+
+GET   	/accountHolder/list           						controllers.AccountHolders.list(p:Int ?= 0, s ?= "account_holder", o ?= "asc", f ?= "", pg ?= "VIEW")
+
+GET     /accountHolder/new                          		controllers.AccountHolders.showBlank() 
+POST    /accountHolder/                             		controllers.AccountHolders.save()
+GET     /accountHolder/:id           						controllers.AccountHolders.edit(id:Long,action ?= "ALL")
+POST  	/accountHolder/:id            						controllers.AccountHolders.update(id:Long)
+GET     /accountHolder/:id/delete							controllers.AccountHolders.delete(id:Long)
+
+GET     /javascriptRoutes     controllers.Application.javascriptRoutes
+
+##################### Invoice Inventory Page ###############################################
+
+GET   	/InvoiceInventory/                     		 																	controllers.InvoiceInventory.showUploadPage()
+GET   	/InvoiceInventory/showPaymentPage/:selectedCompany/:selectedStore/:selectedCategory/:selectedPaymentTerm        controllers.InvoiceInventory.showPaymentPage(selectedCompany:String,selectedStore:String,selectedCategory:String,selectedPaymentTerm:String)
+GET   	/InvoiceInventory/HeadOfficeUpload                     		 													controllers.InvoiceInventory.showUploadPageForHeadOffice()
+GET   	/InvoiceInventory/download                     		 															controllers.InvoiceInventory.showDownloadPage()
+POST   	/InvoiceInventory/upload/:id           																			controllers.InvoiceInventory.uploadInvoices(id:Long)
+POST   	/InvoiceInventory/uploadByHeadOffice          																	controllers.InvoiceInventory.uploadInvoicesByHeadOffice()
+POST   	/InvoiceInventory/download/list           																		controllers.InvoiceInventory.getInvoices()
+GET   	/InvoiceInventory/download/list/:id/:type																		controllers.InvoiceInventory.getInvoicesAfterMove(id:Long,type:String)
+GET   	/InvoiceInventory/list/invoicesAfterPayment/:id/:paymentTerms/:companyId/:filter/:selectedCategory				controllers.InvoiceInventory.getInvoicesAfterPaymentDone(id:Long,paymentTerms:String,companyId:Long,filter:String,selectedCategory:String)
+POST   	/InvoiceInventory/list/move/:id           																		controllers.InvoiceInventory.move(id:Long)
+POST   	/InvoiceInventory/headOfficeList/headOfficeMove/:id           													controllers.InvoiceInventory.headOfficeMove(id:Long)
+POST	/InvoiceInventory/paymentList/paymentMove/:id/:paymentTerms/:companyId/:selectedCategory/:filter				controllers.InvoiceInventory.paymentMove(id:Long,paymentTerms:String,companyId:Long,filter:String,selectedCategory:String)
+GET		/InvoiceInventory/delete/:id																					controllers.InvoiceInventory.delete(id:Long)
+GET  	/InvoiceInventory/invoiceListjustView/:id/:type																	controllers.InvoiceInventory.getInvoicesByStoreAndType(id:Long,type:String)
+POST 	/InvoiceInventory/getInvoicesForPayment/list																	controllers.InvoiceInventory.getInvoicesForPayment()
+POST 	/InvoiceInventory/displayUploaded/list/:id																		controllers.InvoiceInventory.displayUploadedForSK(id:Long)
+GET   	/InvoiceInventory/dateSelectPageForSK/:sid                   													controllers.InvoiceInventory.dateSelectPageForSK(sid:Long)
+GET   	/InvoiceInventory/dateSelectPageForHeadOffice                   												controllers.InvoiceInventory.dateSelectPageForHeadOffice()
+POST 	/InvoiceInventory/displayUploadedForHeadOffice/list/															controllers.InvoiceInventory.displayUploadedForHeadOffice()
+GET   	/InvoiceInventory/:companyId/filter/:selectedCategoryForEnable                   		 						controllers.InvoiceInventory.filterPaymentInvoices(companyId:String,selectedCategoryForEnable:String,f ?= "", refInvoiceId:Long ?= 0L, paymentTerms ?= "ALL")
+GET   	/InvoiceInventory/invoicesBy/supplier/name                 														controllers.InvoiceInventory.getInvoicesBySupplierName()
+GET   	/InvoiceInventory/HeadOffice/invoicesBy/supplier/name  																	controllers.InvoiceInventory.getInvoicesBySupplierNameInHeadOffice()
+##################### Monthly Reports Page ###############################################
+
+GET   	/monthlyReports/                   							controllers.MonthlyReports.showUploadPage()
+POST   	/monthlyReports/upload/:id       							controllers.MonthlyReports.uploadReports(id:Long)
+GET   	/monthlyReports/uploaded/:sid     							controllers.MonthlyReports.showUploadedReports(sid:Long) 
+POST 	/monthlyReports/displayUploaded/:id							controllers.MonthlyReports.displayUploaded(id:Long)
+GET   	/monthlyReports/view                   						controllers.MonthlyReports.viewUploadedReports()
+POST   	/monthlyReports/getUploaded             					controllers.MonthlyReports.getUploadedReports()
+
+##################### Management Reports Page ###############################################
+
+GET     /managementReports      									controllers.ManagementReports.getReportsHome()
+POST    /managementReports/getReport      							controllers.ManagementReports.getManagementReport()
+
+##################### Invoice Inventory Page ###############################################
+
+GET   	/HeadOfficeForms/                     		 				controllers.HoForms.showHoFormUploadPage()
+POST   	/HeadOfficeForms/upload                     		 		controllers.HoForms.uploadHoFormsByHeadOffice()
+GET   	/HeadOfficeForms/headOfficeFormsList                     	controllers.HoForms.getAllHeadOfficeForms()
+
+
+
+###########   Ajax call Routes ##########################################
+
+GET 	/checkForUnique/:param/:type/:mode							controllers.Application.checkForUnique(param:String,type:String,mode:String)
+GET 	/checkTimesheetExists/:sid/:empId/:sh/:eh					controllers.Application.checkTimesheetExists(sid:Long,empId:Long,date:String,endDate:String,leaveType:String,sh:String,sm:String,eh:String,em:String)
+GET 	/checkTimesheetExistsForLeave/:sid/:empId					controllers.Application.checkTimesheetExistsForLeave(sid:Long,empId:Long,date:String,endDate:String)
+GET 	/checkTimesheetExistsEditPage/:sid/:empId/:sh/:eh			controllers.Application.checkTimesheetExistsEditPage(sid:Long,empId:Long,date:String,endDate:String,leaveType:String,sh:String,sm:String,eh:String,em:String,tid:Long)
+GET 	/checkTimesheetExistsForLeaveEditPage/:sid/:empId		    controllers.Application.checkTimesheetExistsForLeaveEditPage(sid:Long,empId:Long,date:String,endDate:String,tid:Long)
+GET		/getStoresByCompany/:cid									controllers.Application.storesByCompany(cid:Long)
+GET 	/checkHeadOfficeTimesheetExists/:sid/:empId/:sh/:eh			controllers.Application.checkHeadOfficeTimesheetExists(sid:Long,empId:Long,date:String,endDate:String,leaveType:String,sh:String,sm:String,eh:String,em:String)
+GET 	/checkHeadOfficeTimesheetExistsForLeave/:sid/:empId			controllers.Application.checkHeadOfficeTimesheetExistsForLeave(sid:Long,empId:Long,date:String,endDate:String)
+

@@ -1,0 +1,293 @@
+ @main{
+<style>
+	
+	.img-responsive {
+    width: 70px;
+}
+</style>   
+        <div class="wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                    
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	<div class="col-md-3 col-sm-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading"><b>STORE</b></div>
+                                				<div class="panel-body">
+			                                		 <a href="@routes.Application.showOptions("STORE","ALL")"><img src="@routes.Assets.at("images/tabImages/storecart.jpg")" class="img-responsive center-block" alt="Image">
+				                                       <p class="text-muted" style="margin-top:10px;">
+                                           				 Manage Stores</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-md-3 col-sm-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading"><b>COMPANY</b></div>
+                                				<div class="panel-body">
+			                                		 <a href="@routes.Application.showOptions("COMPANY","ALL")"><img src="@routes.Assets.at("images/tabImages/company.jpg")" class="img-responsive center-block" alt="Image" style="width:80px;margin-top:-15px">
+				                                       <p class="text-muted" style="margin-top:5px;">
+                                           				 Manage Company's</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										    <div class="col-md-3 col-sm-3">
+									      <div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>STAFF</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.Application.showOptions("STAFF","ALL")"><img src="@routes.Assets.at("images/tabImages/staff.png")" class="img-responsive center-block" alt="Responsive image">
+				                                        <p class="text-muted" style="margin-top:7px;">
+                                            			 Manage Employee's</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+										   <div class="col-md-3 col-sm-3">
+									      <div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>USER</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.Application.showOptions("USER","ALL")"><img src="@routes.Assets.at("images/tabImages/user.png")" class="img-responsive center-block" alt="Responsive image" style="margin-top:-10px;">
+				                                        <p class="text-muted" style="margin-top:5px;">
+                                            			 Manage Users</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+                                 
+                                   
+                            	</div>
+                        	</div>
+                        </div> <!-- content -->
+                        
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	 <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading" style="word-break:break-all;"><b>RECONCILATION</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.DailyReconciliations.drViewOptions(0,"reportingBusinessDate","desc","SUBMITTED","VIEW")"><img src="@routes.Assets.at("images/tabImages/recon.png")" class="img-responsive center-block" alt="Image" style="width:53px;">
+				                                       <p class="text-muted">
+                                           				 Monitor Reconciliation</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>REPORTS</b></div>
+                                					<div class="panel-body">
+										 
+				                                      <a href="@routes.Reports.getReportHome()"><img src="@routes.Assets.at("images/tabImages/rep.png")" class="img-responsive center-block"  alt="Image">
+				                           				<p class="text-muted">
+                                            			Reports Generation</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+	                                   		 <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading" style="word-break:break-all;"><b>SALESHEAD</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.Application.showOptions("SALES HEAD","ALL")"><img src="@routes.Assets.at("images/tabImages/saleshead.jpg")" class="img-responsive center-block" alt="Image">
+				                                       <p class="text-muted">
+                                           				 Type of Sales</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>MEDIA TENDER</b></div>
+                                					<div class="panel-body">
+										 
+				                                      <a href="@routes.Application.showOptions("MEDIA TENDER","ALL")"><img src="@routes.Assets.at("images/tabImages/media.jpg")" class="img-responsive center-block"  alt="Image">
+				                           				<p class="text-muted">
+                                            			Type of Media</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+                            	</div>
+                        	</div>
+                        </div>  <!-- content -->
+                                  
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	 <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading" style="word-break:break-all;"><b>EXPENSE HEAD</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.Application.showOptions("EXPENSE HEAD","ALL")"><img src="@routes.Assets.at("images/tabImages/expenses.png")" class="img-responsive center-block" alt="Image" style="width:65px;">
+				                                       <p class="text-muted">
+                                           				Type Of Expenses</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>TERMINAL HEAD</b></div>
+                                					<div class="panel-body">
+										 
+				                                      <a href="@routes.Application.showOptions("TERMINAL HEAD","ALL")"><img src="@routes.Assets.at("images/tabImages/terminal.jpg")" class="img-responsive center-block"  alt="Image">
+				                           				<p class="text-muted">
+                                            			Counters</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+	                                   		 <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading" style="word-break:break-all;"><b>PAYMENT TENDER</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.Application.showOptions("PAYMENT TENDER","ALL")"><img src="@routes.Assets.at("images/tabImages/paymenttender.jpg")" class="img-responsive center-block" alt="Image">
+				                                       <p class="text-muted">
+                                           				 Lottery</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-3 col-md-3">
+									      	 <div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>SUPPLIER</b></div>
+                                				<div class="panel-body">
+				                                    <a href="@routes.Application.showOptions("SUPPLIER","ALL")" ><img src="@routes.Assets.at("images/tabImages/supp.png")" class="img-responsive center-block" alt="Image">
+				                                        <p class="text-muted">
+				                                            Supplier</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+                                </div>
+                           </div>
+                       </div> <!-- content -->
+                       
+                       <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	<div class="col-sm-3 col-md-3">
+                                		 <div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>TIMESHEET</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.Timesheets.showSelectPage()"><img src="@routes.Assets.at("images/tabImages/timesheet.png")" class="img-responsive center-block" alt="Responsive image" style="width:60px;">
+				                                        <p class="text-muted">
+                                            			Timesheet Processing</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+									</div>
+									<div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success" style="height:210px;" >
+									        <div class="panel-heading"><b>INVOICE INVENTORY</b></div>
+                                				<div class="panel-body">
+			                                		 <a href="@routes.InvoiceInventory.showDownloadPage()"><img src="@routes.Assets.at("images/tabImages/invoicedownload.jpg")" class="img-responsive center-block" alt="Image" style="width:60px;">
+				                                       <p class="text-muted">
+                                           				Invoice Processing </p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>INVOICE UPLOAD</b></div>
+                                					<div class="panel-body">
+				                                      <a href="@routes.InvoiceInventory.showUploadPageForHeadOffice()"><img src="@routes.Assets.at("images/tabImages/upload.jpg")" class="img-responsive center-block"  alt="Image" style="width:60px;">
+				                           				<p class="text-muted">
+                                            			By Head Office</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+	                                       <div class="col-sm-3 col-md-3">
+									       <div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>INVOICE PAYMENT</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.InvoiceInventory.showPaymentPage("noCompany","noStore","noCategory","noPaymentTerm")"><img src="@routes.Assets.at("images/tabImages/payment.jpg")" class="img-responsive center-block" alt="Image" style="width:60px;">
+				                                        <p class="text-muted">
+				                                            Payments Done Here</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+										  <div class="col-sm-3 col-md-3">
+										  	<div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>MONTHLY REPORTS</b></div>
+                                				<div class="panel-body">
+			                                    	<a href="@routes.MonthlyReports.viewUploadedReports()"><img src="@routes.Assets.at("images/tabImages/mrep.png")" class="img-responsive center-block" alt="Image" align="middle" style="width:55px;">
+			                                        <p class="text-muted" style="margin-top: 10px;">
+			                                            Monthly Reports</p>
+			                                    	</a>
+                                     			</div>
+											</div> 
+										 </div> 
+										 <div class="col-sm-3 col-md-3">
+										  	<div class="panel panel-success" style="height:210px;">
+									        <div class="panel-heading"><b>MANAGED REPORTS</b></div>
+                                				<div class="panel-body">
+			                                    	<a href="@routes.ManagementReports.getReportsHome()"><img src="@routes.Assets.at("images/tabImages/saleesreconcilation.jpg")" class="img-responsive center-block" alt="Image" align="middle" style="width:60px">
+			                                        <p class="text-muted" style="margin-top:10px;">
+			                                            Managed Reports</p>
+			                                    	</a>
+                                     			</div>
+											</div> 
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>HO TIMESHEET</b></div>
+                                					<div class="panel-body">
+										 
+				                                      <a href="@routes.Timesheets.showSelectPageForHeadOfficeTimeSheet()"><img src="@routes.Assets.at("images/tabImages/timesheet.png")" class="img-responsive center-block"  alt="Image" style="width:65px;">
+				                           				<p class="text-muted">
+                                            			Timesheet Processing</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<div class="panel panel-success" style="height:210px;">
+									        	<div class="panel-heading"><b>HO FORMS</b></div>
+                                					<div class="panel-body">
+										 
+				                                      <a href="@routes.HoForms.showHoFormUploadPage()"><img src="@routes.Assets.at("images/tabImages/mreports1.png")" class="img-responsive center-block"  alt="Image" style="width:65px;">
+				                           				<p class="text-muted">
+                                            			Upload HO Forms</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+                                </div>
+                           </div>
+                       </div> <!-- content -->
+                       
+                       <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                
+                                </div>
+                           </div>
+                       </div> <!-- content -->
+                       
+       				</div> <!-- span 12 -->
+        		</div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+     	 <div class="wrapper">
+            <div class="container">
+                <div class="row">
+			     	 <div class="footer">
+							          <hr/>   
+							            <div class="container">
+							               <p  class="pull-right"> <b class="copyright">&copy; 2014 SRINI Group &nbsp;</b>All rights reserved.</p>
+							            </div>
+					 </div> <!-- footer -->
+					 </div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+	
+}

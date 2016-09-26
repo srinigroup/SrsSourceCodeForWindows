@@ -1,0 +1,132 @@
+ @main{
+ <style>
+.img-responsive {
+    width: 60px;
+}
+
+</style>
+           
+        <div class="wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                        
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                     <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>REPORTS</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.Reports.getReportHome()"><img src="@routes.Assets.at("images/tabImages/saleesreconcilation.jpg")" class="img-responsive center-block" alt="Image">
+			                                        <p class="text-muted"> Reports Generation</p>
+			                                   		 </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										 
+	                                     <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>TIMESHEET</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.Timesheets.showSelectPage()"><img src="@routes.Assets.at("images/tabImages/timesheet.png")" class="img-responsive center-block" alt="Image">
+				                                        <p class="text-muted">Timesheet Processing</p>
+				                                     </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+										   <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>MONTHLY REPORTS</b></div>
+                                				<div class="panel-body">
+				                                  	<a href="@routes.MonthlyReports.viewUploadedReports()"><img src="@routes.Assets.at("images/tabImages/mreports1.png")" class="img-responsive center-block" alt="Image">
+				                                        <p class="text-muted">View Monthly Reports</p>
+				                                   	</a>  
+	                                     		</div>
+										   </div> 
+										  </div>
+                                   		    <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success">
+									        	<div class="panel-heading" style="word-break:break-all;"><b>RECONCILATION</b></div>
+                                					<div class="panel-body">
+													 <a href="@routes.DailyReconciliations.drViewOptions(0,"reportingBusinessDate","desc","SUBMITTED","VIEW")"><img src="@routes.Assets.at("images/tabImages/mrep.png")" class="img-responsive center-block" alt="Image">
+				                                        <p class="text-muted"> Monitor Reconciliation</p>
+				                                   	</a>
+                                    
+				                                    </div>
+										      </div> 
+										   </div>
+                                   
+                            	</div>
+                        	</div>
+                        </div>  <!-- content -->
+                                  
+                        
+                       <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	 <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>INVOICE INVENTORY</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.InvoiceInventory.showDownloadPage()"><img src="@routes.Assets.at("images/tabImages/invoicedownload.jpg")" class="img-responsive center-block" alt="Image">
+			                                        <p class="text-muted"> Invoice Processing </p>
+			                                   		 </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										 
+	                                     <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>INVOICE UPLOAD</b></div>
+                                				<div class="panel-body">
+				                                     <a href="@routes.InvoiceInventory.showUploadPageForHeadOffice()"><img src="@routes.Assets.at("images/tabImages/filemoved.ico")" class="img-responsive center-block" alt="Image">
+				                                         <p class="text-muted"> Upload By Head Office</p>
+				                                     </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+										   <div class="col-sm-3 col-md-3">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>INVOICE PAYMENT</b></div>
+                                				<div class="panel-body">
+				                                  	 <a href="@routes.InvoiceInventory.showPaymentPage("noCompany","noStore","noCategory","noPaymentTerm")"><img src="@routes.Assets.at("images/tabImages/payment.jpg")" class="img-responsive center-block" alt="Image">
+				                                        <p class="text-muted">Payments Done Here</p>
+				                                   	</a>  
+	                                     		</div>
+										   </div> 
+										  </div>
+                                   		    <div class="col-sm-3 col-md-3">
+									      	<div class="panel panel-success">
+									        	<div class="panel-heading"><b>SUPPLIER</b></div>
+                                					<div class="panel-body">
+													 <a href="@routes.Application.showOptions("SUPPLIER","ALL")"><img src="@routes.Assets.at("images/tabImages/supp.png")" class="img-responsive center-block" alt="Image">
+														<p class="text-muted">Supplier</p>	
+													</a>
+                                    
+				                                    </div>
+										      </div> 
+										   </div>
+                                   
+                                </div>
+                           </div>
+                       </div> <!-- content -->
+             
+                                               
+				        <div class="footer">
+				          <hr/>   
+				            <div class="container">
+				               <p  class="pull-right"> <b class="copyright">&copy; 2014 SRINI Group &nbsp;</b>All rights reserved.</p>
+				            </div> <!-- container -->
+				        </div> <!-- footer -->
+          </div> <!-- content -->
+                 
+       				</div> <!-- span 12 -->
+        		</div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+	
+}
+
+ 
+                                

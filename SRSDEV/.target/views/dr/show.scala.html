@@ -1,0 +1,108 @@
+
+@( dsrForm: Form[DailyReconciliation], store: Store)
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ 
+ 
+ @currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@import java.lang.String; var display = ""; 
+
+@if(DailyReconciliations.getOPENStatus(store.id)){
+
+	@{display="disabled"}
+
+}
+
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")" class="btn btn-default">DAILY RECONCILIATION</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+     
+@helper.form(action = routes.DailyReconciliations.save(store.id)) {
+	
+	
+	<h3>@store.name Sales</h3>
+		
+		<hr/>
+		<br/>
+	<div class="table-responsive">
+		<table class="table table-bordered" style="background-color: white;border-color: #fff;">
+			 <tr>
+				
+				<td>
+					@helper.inputText(dsrForm("createDate"), '_label -> "Created Date",'readonly -> "readonly")
+				</td>
+				<td> Last Reporting Date&nbsp;&nbsp;&nbsp;
+					 <input type="text" name="LastReportingDate" value="@DailySalesReconciliation.getLastReportingBusinessDate(store.id)" readonly="readonly" />
+				</td>
+				<td>
+					@helper.inputText(dsrForm("store.name"), '_label -> "Store Name",'readonly -> "readonly")
+				</td>
+			</tr>	
+			<tr>
+				<td>
+					@helper.inputText(dsrForm("reportingBusinessDate"), '_label -> "Reporting Business Date",'readonly -> "readonly")
+				</td>
+				<td>
+					@helper.inputText(dsrForm("store.cashInSafe"), '_label -> "Cash in Safe",'readonly -> "readonly")
+				</td>
+				<td>
+					
+					@select(
+  				 dsrForm("status"),
+  				 options(Seq("OPEN","SUBMITTED")),
+ 				 '_label -> "Status", '_default -> "-- Select Status --"
+				)</td>
+			</tr>
+			
+			
+		</table>
+       </div>
+		
+      		
+      	
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;" @display >&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+       
+  
+}<!-- form end -->
+
+	</div>
+	</div>
+
+}<!-- main end -->
+

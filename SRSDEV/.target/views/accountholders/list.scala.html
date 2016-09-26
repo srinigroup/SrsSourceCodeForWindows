@@ -1,0 +1,176 @@
+@(currentPage: com.avaje.ebean.Page[AccountHolder], currentSortBy: String, currentOrder: String, currentFilter: String, pageAction: String)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.AccountHolders.list(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+@main {
+    
+   
+   <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("ACCOUNT HOLDER","ALL")" class="btn btn-default">ACCOUNT HOLDER</a>
+            				<a href="#" class="btn btn-default">@pageAction</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("ACCOUNT HOLDER","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+   
+   
+
+    @if(flash.containsKey("success")) {
+         <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+    <div id="actions">
+        
+        <form action="@link(0, "name")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by Account Holder name...">
+            <input type="hidden"  name="pg" value="@pageAction"/>
+            <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-info">
+            </p>
+            
+        </form>
+        
+    </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <div class="table-responsive"> 
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+            	<thead style="background-color: gainsboro;">
+                	<tr>
+                     	@header("accountHolder", "Account Holder Name")
+                                     
+                     	<th>Store</th>
+                      
+                      	<th>Phone</th>
+                      
+                       	<th>Email</th>
+                      
+                	</tr>
+            	</thead>
+            	<tbody>
+
+	                @for(account <- currentPage.getList) {
+	                    <tr>
+	                                              
+	                         <td><a href="@routes.AccountHolders.edit(account.id,flash.get("pageAction"))">@account.accountHolder</a></td>
+	                        
+	                         <td>
+	                            @if(account.store == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @account.store.name
+	                            }
+	                        </td>
+	                                                
+	                                             
+	                      	<td>
+	                            @if(account.contactInfo.phone1 == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @account.contactInfo.phone1 
+	                            }
+	                        </td>
+	                      
+	                         <td>
+	                            @if(account.contactInfo.email  == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @account.contactInfo.email 
+	                            }
+	                        </td>
+	                         
+	                    </tr>
+	                }
+
+            	</tbody>
+        	</table>
+        </div>
+
+        <div id="pagination" class="pager">
+            <ul>
+                @if(currentPage.hasPrev) {
+                    <li class="previous">
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="previous disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li class="next">
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+    }
+    
+     </div>
+    </div>
+        
+}
+
+            

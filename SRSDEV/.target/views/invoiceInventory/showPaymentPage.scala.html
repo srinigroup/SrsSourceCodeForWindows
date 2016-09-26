@@ -1,0 +1,120 @@
+@(selectedCompany:String,selectedStore:String,selectedCategory:String,selectedPaymentTerm:String)
+@import helper._ 
+@import helper.twitterBootstrap._
+
+   
+@main{
+        		<script type="text/javascript" src="@routes.Assets.at("javascripts/invoice.js")"></script>
+     
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">PAYMENT</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.InvoiceInventory.getInvoicesForPayment()) {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="companyId_field">
+								<label for="companyId">Select Company</label>
+									<div class="input">
+										<select name="companyId" id="companyId" required onchange="populateStoreOptionsInInvoicePayments()">
+						            		<option class="blank" value="">-- Choose a Company --</option>
+						  					@for(company <- Company.find.where().eq("status", "ACTIVE").orderBy("name").findList()){
+						  						<option value="@company.id" id="@company.id">@company.name</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	
+					  	<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="storeId">Select Store</label>
+									<div class="input">
+										<select name="storeId" id="invoiceStoreList" onchange="enableCategoryAtpaymentPage()">
+						            		<option class="blank" value="">-- Choose a Store --</option>
+						  					
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	
+					  	<td>
+								<div class="clearfix" id="invoiceCategoryAtPaymentPage_field" style="display:none;">
+	    							<label for="invoiceCategory">Invoice Category</label>
+	    								<div class="invoiceCategory">
+	        								<select name="invoiceCategory" id="invoiceCategoryAtPaymentPage" onchange="disablePaymentTermsAtpaymentPage()">
+						            			<option class="blank" value="">-- Choose a Category --</option>
+						  						<option value="Fuel">Fuel</option>
+						  						<option value="Other">Other</option>
+						  					</select>
+	        								<span class="help-inline"></span>
+	    								</div>
+									</div>
+						</td>
+						
+						<td>
+            				<div class="clearfix" id="paymentTermsAtpaymentPage_field" style="display:none;">
+								<label for="paymentTerms">Select Payment Term</label>
+									<div class="input">
+										<select id="paymentTermsAtpaymentPage" name="paymentTerms">
+											<option value="ALL">ALL</option>
+											<option value="CashPaid">CashPaid</option>
+											<option value="DD">DD</option>
+											<option value="FortNightly">FortNightly</option>
+											<option value="Weekly">Weekly</option>
+											<option value="Monthly">Monthly</option>
+											<option value="Others">Others</option>
+										</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	
+            		</tr>
+            	</table>
+         	</div>
+		
+        <center><input type="submit" value="Get Invoices" class="btn btn-primary"></center>
+        <a href="#" data-toggle="popover" title="Total Invoices : @Invoice.processedInvoicesByAllStores()" data-content="<ul>@for(store <- Stores.getStoresList()){@if(store.id != 1){<li>@store.name : @Invoice.processedInvoicesByStore(store.id)</li>}}</ul>" data-placement="bottom" data-trigger="hover" class="pull-right btn btn-danger">To Be PAID (Store)</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#" data-toggle="popover" title="Total Invoices : @Invoice.processedInvoicesByAllCompanies()" data-content="<ul>@for(company <- Company.find.where().eq("status", "ACTIVE").orderBy("name").findList() ){<li>@company.name : @Invoice.processedInvoicesByCompany(company.id)</li>}</ul>" data-placement="bottom" data-trigger="hover" class="pull-right btn btn-danger">To Be PAID (Company)</a>
+        
+        
+	
+	} <!-- form ends -->
+	
+		
+		
+		</div>
+	</div>
+	 <input type="hidden" id="paymentSelectedPaymentTerm" name="paymentSelectedPaymentTerm" value="@selectedPaymentTerm">
+    <input type="hidden" id="paymentSelectedInvoiceType" name="paymentSelectedInvoiceType" value="@selectedCategory">
+	<input type="hidden" id="paymentSelectedCompany" name="paymentSelectedCompany" value="@selectedCompany">
+	<input type="hidden" id="paymentSelectedStore" name="paymentSelectedStore" value="@selectedStore">
+} <!-- main ends -->

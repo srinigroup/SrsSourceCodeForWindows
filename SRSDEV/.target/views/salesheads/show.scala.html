@@ -1,0 +1,84 @@
+@(salesHeadForm: Form[SalesHead] )
+
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ 
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("SALES HEAD","ALL")" class="btn btn-default">SALES HEAD</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("SALES HEAD","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         	<br><br>
+         	
+         	@if(flash.containsKey("success")) {
+       			<div class="alert alert-warning">
+            		<strong>Done!</strong> @flash.get("success")
+        		</div>
+    		}
+	
+  
+  	@helper.form(action = routes.SalesHeads.save()) {
+		
+
+	<!-- panel-group -->
+	<div class="panel-group" id="accordion">
+		
+		<!-- panel-primary 1-->
+   		<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionOne">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+            			SalesHead Details
+            			<i class="icon-unlock icon-large pull-right"></i>
+             		</h4>
+             	</a>  
+        	</div>
+        	<div id="accordionOne" class="panel-collapse collapse in">
+          		<div class="panel-body">
+          			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<fieldset> 
+	         					<legend> New SalesHead</legend>    
+								@helper.inputText(salesHeadForm("name"), '_label -> "Name", 'onblur -> "javascript:checkForUnique(this,'SALESHEAD','NAME');")
+					         	@helper.inputText(salesHeadForm("category"), '_label -> "Category") 
+							</fieldset>
+						</table>
+					</div>
+            	</div>
+        	</div>
+      	</div><!-- panel-primary 1 End-->
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+    
+    </div><!-- panel-group End-->
+
+
+	}<!-- form end -->
+	
+	</div>
+	</div>
+
+}<!-- main end -->

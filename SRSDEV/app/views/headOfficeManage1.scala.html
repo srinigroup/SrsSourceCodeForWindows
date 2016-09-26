@@ -1,0 +1,99 @@
+@(page : String)
+
+
+
+@link(action:String) = @{
+
+    
+   
+    var url = page+"_"+action
+   	url
+    
+}
+
+
+@main{               
+        
+        <div class="wrapper">
+            <div class="container" >
+			    <div class="row">
+                    <div class="span12">
+       
+       					<span>
+        					<div id="bc1" class="btn-group btn-breadcrumb">
+            					<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            					<a href="#" class="btn btn-default">TIMESHEET</a>
+        					</div>
+        				</span>
+        
+         				<span class="pull-right" style="padding-right:50px;">
+           					<div>
+            					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+        					</div>
+        				</span>      
+            		</div>
+        		</div>
+                     	<br><br>
+            
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row  row-fluid">
+                                	<div class="col-sm-6 col-md-6">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>ADD</b></div>
+                                				<div class="panel-body">
+				                                    <a href="@routes.Application.showOptions(page,"ADD")"><img src="@routes.Assets.at("images/tabImages/add.png")" class="img-responsive center-block" alt="Image" style="width:15%">
+				                                         <p class="text-muted">
+                                            				ADD TIMESHEET</p>
+				                                    </a>
+				                                     </div>
+										   		</div> 
+										  	</div>
+	                                <div class="col-sm-6 col-md-6">
+										<div class="panel panel-success" >
+										 	<div class="panel-heading"><b>VIEW</b></div>
+	                                			<div class="panel-body">
+				                                 	<a href="@routes.Application.showOptions(page,"VIEW")"><img src="@routes.Assets.at("images/tabImages/view.jpg")" class="img-responsive center-block" alt="Image" align="middle"  style="width:25%">
+				                                        <p class="text-muted" style="margin-top:5px;">
+				                                            VIEW TIMESHEET</p>
+				                                    </a>
+				                                     </div>
+											   		</div> 
+											  	</div>
+                                </div>
+                            </div>
+                        </div> <!-- content -->
+                        
+                      @*  <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                @if((session.get("role")).contains("sa")){
+                                
+                                    <a href="@routes.Application.showOptions(page,"MODIFY")" class="btn-box big span6"><i class="icon-edit"></i><b>MODIFY</b>
+                                        <p class="text-muted">
+                                            @page</p>
+                                    </a>
+                                    
+                                    <a href="@routes.Application.showOptions(page,"DELETE")" class="btn-box big span6"><i class="icon-trash"></i><b>DELETE</b>
+                                        <p class="text-muted">
+                                            @page</p>
+                                    </a>
+                                    }
+                                                                      
+                                </div>
+                             </div>
+                         </div> <!-- content -->*@
+                                   
+				        <div class="footer" style="color: #999;padding: 308px 0 60px;">
+				          <hr/>   
+				            <div class="container">
+				               <p  class="pull-right"> <b class="copyright">&copy; 2015 SRINI Group &nbsp;</b>All rights reserved.</p>
+				            </div>
+				        </div> <!-- footer -->
+        
+       				</div> <!-- span 12 -->
+       			</div> <!-- row -->
+      		</div> <!-- container -->
+ 		</div> <!-- wrapper -->
+    
+    }

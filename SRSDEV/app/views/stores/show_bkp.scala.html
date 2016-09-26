@@ -1,0 +1,275 @@
+
+@(supplierPage: com.avaje.ebean.Page[Supplier],salesHeadPage: com.avaje.ebean.Page[SalesHead],mediaTenderPage: com.avaje.ebean.Page[MediaTender],expenseHeadPage: com.avaje.ebean.Page[ExpenseHead],terminalHeadPage: com.avaje.ebean.Page[TerminalHead],totalSalesHeadPage: com.avaje.ebean.Page[TotalSalesHead], storeForm: Form[Store], contactForm: Form[ContactInfo], addressForm: Form[Address] )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+@main{
+
+@helper.form(action = routes.Stores.save()) {
+
+   
+			
+    <article class="accordion">
+	<section id="acc1" class="active">
+		<h2><a href="#acc1">Store Details</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+		<table>
+			<tr>
+				<td> @select(
+                storeForm("company.id"), 
+                options(Company.options), 
+                '_label -> "Company", '_default -> "-- Choose a company --",
+                '_showConstraints -> false
+            )
+				</td>
+				
+				
+					<td>@helper.inputText(storeForm("name"), '_label -> "Store Name:")</td>
+				
+			</tr>
+			<tr>
+				<td>@helper.inputText(storeForm("description"), '_label -> "Store Description:")</td>
+				<td></td>
+				
+			</tr>
+		</table>
+		<!-- <p class="accnav"><a href="#acc2">next ➧</a></p> -->
+	</section>
+	
+	<section id="acc2">
+		<h2><a href="#acc2">Contact Info</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+		<table>
+			<tr>
+				
+				<td>
+					 @helper.inputText(contactForm("phone1"), '_label -> "Store phone1 :")
+				</td>
+				
+				<td>
+					 @helper.inputText(contactForm("email"), '_label -> "Store E-Mail :")
+				</td>
+			</tr>
+			<tr>
+				<td>  @helper.inputText(contactForm("phone2"), '_label -> "Store phone2") </td>
+				
+				
+				<td>
+					@helper.inputText(contactForm("phone2"), '_label -> "Facsmile :")
+				</td>
+			</tr>
+		</table>
+	<!--	<p class="accnav"><a href="#acc3">next ➧</a></p> -->
+	</section>
+	
+	<section id="acc3">
+		<h2><a href="#acc3">Address</a></h2>
+		<hr/>
+		<br/>
+		<br/>	
+		
+		<table>
+		<tr colspan=2>
+				<td>
+				<p><label>Search Address</label>
+				<input class="text_field" id="addressid" name="searchAddress" type="text" value="" style="width:500px;" onblur="getParsedAddress();getSimilar();"/></p>
+
+				
+				<p><label>Similar Addresses </label>
+                  <select class="text_field" id="similarAddressesid" name="similarAddresses" size="5" style="width:510px;" onchange="similarAddressesChange()" multiple></select>
+                 
+				</p>
+				</td>
+				
+				
+			</tr>
+			<tr>
+				<td> @helper.inputText(addressForm("street"), '_label -> "Street")</td>
+				
+				<td> @helper.inputText(addressForm("city"), '_label -> "City :") </td>
+				
+			</tr>
+			<tr>
+				<td>@helper.inputText(addressForm("number"), '_label -> "Number :")  </td>
+				
+				
+				<td>
+					@helper.inputText(addressForm("state"), '_label -> "State :")
+				</td>
+			</tr>
+			<tr>
+				<td> @helper.inputText(addressForm("postalCode"), '_label -> "PostalCode :") </td>
+				
+				<td>  @helper.inputText(addressForm("country"), '_label -> "Country :") </td>
+				
+			</tr>
+		</table>
+		<!-- <p class="accnav"><a href="#acc4">next ➧</a></p> -->
+	</section>
+	<section id="acc4">
+		<h2><a href="#acc4" >Head Mappings</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+	<div id="tabpanel">
+					<ul id="boxLinks">
+                	<li><a href="#box1" id="tab1">SalesHeads</a></li>
+                	<li><a href="#box2" id="tab2">MediaTenders</a></li>
+                	<li><a href="#box3" id="tab3">ExpenseHeads</a></li>
+                	<li><a href="#box4" id="tab4">TotalSalesHeads</a></li>
+                	<li><a href="#box5" id="tab5">TerminalHeads</a></li>
+                </ul>
+                
+                 <div id="box" class="box" > 
+               
+   <div id="box1" class="box" >
+                	       
+    @if(salesHeadPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(saleshead <- salesHeadPage.getList) {
+                    <tr>
+                        <td><input type="checkbox" id="@saleshead.id" name="salesheadslist[]" value="@saleshead.id" > @saleshead.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+      }
+    </div>
+    
+     <div id="box2" class="box" >
+     
+       @if(mediaTenderPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(mediatender <- mediaTenderPage.getList) {
+                    <tr>
+                        <td><input type="checkbox" id="@mediatender.id" name="mediatenderslist[]" value="@mediatender.id" > @mediatender.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+      }
+                	
+     </div>
+		     <div id="box3" class="box" >
+		                	
+		      @if(expenseHeadPage.getTotalRowCount == 0) {
+		        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        
+		        <table class="computers zebra-striped">
+		           
+		            <tbody>
+		
+		                @for(expensehead <- expenseHeadPage.getList) {
+		                    <tr>
+		                        <td><input type="checkbox" id="@expensehead.id" name="expenseheadslist[]" value="@expensehead.id" > @expensehead.name</td>
+		                                            
+		                             
+		               </tr>
+		               }
+		
+		            </tbody>
+		        </table>
+		      }
+		                	
+		                	
+		    </div>
+		    
+			<div id="box4" class="box" >
+		                	       
+		    @if(totalSalesHeadPage.getTotalRowCount == 0) {
+		        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        
+		        <table class="computers zebra-striped">
+		           
+		            <tbody>
+		
+		                @for(totalsaleshead <- totalSalesHeadPage.getList) {
+		                    <tr>
+		                        <td><input type="checkbox" id="@totalsaleshead.id" name="totalsalesheadslist[]" value="@totalsaleshead.id" > @totalsaleshead.name</td>
+		                                            
+		                             
+		               </tr>
+		               }
+		
+		            </tbody>
+		        </table>
+		      }
+		    </div>
+		    
+		    <div id="box5" class="box" >
+		                	       
+		    @if(terminalHeadPage.getTotalRowCount == 0) {
+		        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        
+		        <table class="computers zebra-striped">
+		           
+		            <tbody>
+		
+		                @for(terminalhead <- terminalHeadPage.getList) {
+		                    <tr>
+		                        <td><input type="checkbox" id="@terminalhead.id" name="terminalheadslist[]" value="@terminalhead.id" > @terminalhead.name</td>
+		                                            
+		                             
+		               </tr>
+		               }
+		
+		            </tbody>
+		        </table>
+		      }
+		    </div>
+      </div>
+     
+</section>
+<section id="acc6" style="height:auto; ">
+<p class="accnav"><input type="submit" class="btn primary" >  
+<a href="@routes.Stores.list()" class="btn">Cancel</a>  <!-- <a href="#acc1">up ➧</a>  --> </p>
+</section>
+</article>
+
+}
+
+}

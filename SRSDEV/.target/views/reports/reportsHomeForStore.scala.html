@@ -1,0 +1,131 @@
+@(sid:Long)
+ @import helper._ 
+ @import helper.twitterBootstrap._
+
+ 
+ @main{
+	 	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/reports.css")">
+	
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">REPORTS</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+    
+	
+	<form id="ajaxform" action="@routes.Reports.getReport()" method="POST">
+
+  	<div class="panel panel-success" style="height:210px;border-color:#000000;" >
+		<div class="panel-heading" style="background-color:#9fdf9f;height:60px;"><center> <h2 style="color:#000;margin-top: 5px">Srini Group DashBoard</h2></center></div>
+	   		 <div class="panel-body" style="font-size: 16px;">
+			  	<div class="table-responsive">
+			  		<table  style="background-color: #dff0d8;border-color:#000000;" class="table table-bordered">
+			  			<tr>
+			  				<td><b>Start Date :</b> <input type="text" name="reportStartDate" class="datepicker1"  readonly='readonly'/></td>
+			  				<td><b>End Date : </b><input type="text" name="reportEndDate" class="datepicker1"  readonly='readonly'/> </td>
+			  				<td> <b> @Store.find.byId(sid)</b> <input type="hidden" name="reportStore" value="@sid" ></td>
+			  			</tr>
+			  			<tr>
+			  				<td><b>Category&nbsp;&nbsp; : </b>
+			  					<select name="byType" id="byType">
+				  					<option value="sales">Sales</option>
+				  					<option value="media">MediaTender</option>
+				  					<option value="invoices">Invoices</option>
+				  					<option value="ReconciliationReport">Reconciliation Report</option>
+			  					</select>
+			  				</td>
+							<td><b>SortBy&nbsp;&nbsp;&nbsp; : </b>
+							<select name="sortBy" id="sortBy">
+								<option value="DATE">DATE</option>
+			  					<option value="STORE">STORE</option>
+			  				</select>
+			  				</td>
+			  				<td>
+			  				<input type="submit" id="reportButton" class="btn btn-primary" name="reportButton" value="GetReport"/>
+			  				<input type="reset" class="btn btn-danger"  value="Reset"/> 
+			  				</td>
+			  			</tr>
+			  		</table>
+			  	</div>
+			  </div>
+			  <div id="sortByDiv" style="display:none">
+				<select  id="sortBySelectTagForSales">
+					<option value="DATE">DATE</option>
+					<option value="STORE">STORE</option>
+				</select>
+				<select  id="sortBySelectTagForSupp">
+					<option value="DATE">DATE</option>
+					<option value="STORE">STORE</option>
+					<option value="SUPPLIER">SUPPLIER</option>
+					<option value="PAYTERMS">PAYTERMS</option>
+				</select>
+			</div>
+  		</div>
+	
+    <br/>
+	
+	<div class="table-responsive" style="max-width: 100%;overflow-x: overlay;">
+   		<table class="table table-bordered" style="background-color: white;border-color: #fff;"> 
+    		<tr>
+	    		<td>
+	    		<div id="visualizationtable"></div> 
+	    		</td>
+     		<tr>
+	     		<td> 
+	     		<div id="visualizationbar"> 
+	     		</div>
+	     		</td>
+     		</tr>
+      </table>
+    </div>
+	
+	<!-- BootsTrap Modal for Report Click Event -->
+	
+	<div class="modal fade" id="myModalReportClick" role="dialog" style="background-color: rgba(0, 0, 0,0.3);">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Gopi</p>
+          	
+		  		<div id="chartpopUP"> // div for chart,Here our Chart Comes
+		  		</div>
+		  	
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- BootsTrap Modal Ends -->
+    
+    
+ </form>
+	
+
+	</div>
+	</div>
+
+}<!-- main end -->
+ 

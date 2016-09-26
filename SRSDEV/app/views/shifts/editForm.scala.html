@@ -1,0 +1,329 @@
+@(dsrForm: Form[DailySalesReconciliation],dsrObject:DailySalesReconciliation, store: Store,shift:Shift )
+
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@checkSelected(id:String,eid:Long) = @{
+    
+    var result = eid.toString();
+    
+     
+       if(result==id){
+       	
+       	result = "selected";
+       	}
+    
+    result
+}
+
+@isStatusValid(typeObj:String) = @{
+
+	var result = "";
+	if(typeObj.equals("SHIFT")){
+	
+		if(shift.status.equals("SUBMITTED")){
+			result = "disabled" ;
+		}
+	}
+	result
+}
+
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@main{
+
+	<div class="wrapper" style="min-height:700px">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+            					<a href="@routes.Application.showOptions("SHIFT","ALL")" class="btn btn-default">SHIFT</a>
+            					<a href="#" class="btn btn-default">@flash.get("pageAction")</a>
+            				}
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           				 	@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					@if((session.get("role")).contains("admin") || (session.get("role")).contains("su") 
+           					|| (session.get("role")).contains("ac")|| (session.get("role")).contains("sa")  || (session.get("role")).contains("HeadOffice Accountant")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+     
+@helper.form(action = routes.Shifts.update(shift.id,store.id,flash.get("pageAction")),'enctype -> "multipart/form-data",'id -> "shiftEditForm", 'onsubmit -> "return verifyPayoutReqmnts();") {
+	
+	<style>
+		table {
+		height: 5px;
+	    border: 1px solid black;
+    	}
+	</style>
+	
+	<h3>Shift Details</h3>
+		
+		<hr/>
+		<br/>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+            <thead>
+               <tr style="background-color:#58ACFA">
+                   
+                 	 <th>Created Date</th>
+                      <th>Reporting Business Date</th>
+                      <th>Shift Start Time</th>
+                      <th>Total Sales Reported</th>
+                      <th>Total Media Collected</th>
+                      <th>Shift Variance</th>
+                  	  <th>Reason for Variance</th>
+                  	  <th>Status</th>
+               </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>@currentDateFormat(dsrObject.todayDate)</td>
+                        
+                        <td>@currentDateFormat(dsrObject.reportingBusinessDate) </td>
+                        
+                        <td>@shift.shiftStartDateTime </td>
+                         
+                        <td> @Shift.getTotalSales(shift) </td>
+                        
+                        <td> @Shift.getTotalMedialCollected(shift)</td> 	
+                        
+                        <td> @Shift.getTotalVariance(shift)</td>
+                         
+                        <td> @shift.varReason</td> 	
+                       	
+                       	<td> @shift.status  </td>  	
+                       	
+                    </tr>
+            </tbody>
+        </table>
+       </div>
+		<br>
+         	<ul class="tabs">
+	  			<li class="active" rel="tab1">Sales</li>
+	  			<li rel="tab2">Media Collected</li>
+	  			<li rel="tab3">Variance by Media</li>
+	  			<li rel="tab4">Register Payouts</li>
+	  			<li rel="tab5">Payment Amounts</li>
+			</ul>
+		<div class="tab_container">
+  		<h3 class="d_active tab_drawer_heading" rel="tab1">Sales</h3>
+  		<div id="tab1" class="tab_content">
+			@if(shift.shiftSales.size() == 0) {
+				<div class="well">
+					 <em>Nothing to display</em>
+				</div>
+			}else {
+			
+        	<table class="table table-bordered">
+            	<thead>
+ 					<th style="background-color:#D0F5A9">Sales Heads</th>
+                    <th style="background-color:#D0F5A9">Sale Amount</th>
+                </thead> 
+            	<tbody>
+                	@for(shiftSale <- shift.shiftSales) {
+	    		    	<tr>
+	                		<td> @shiftSale.salesHead.name</td>
+	                    	<td> <input type="text" id="@shiftSale.salesHead.name" class ="saleshead" name="@shiftSale.salesHead.name" value="@Shift.getShiftSaleAmount(shift.shiftSales,shiftSale.salesHead.name)" ></td>
+	                     </tr>
+               		}
+               	</tbody>
+        	</table>
+      		}
+		</div>
+  					
+		<h3 class="tab_drawer_heading" rel="tab2">Media Collected</h3>
+		<div id="tab2" class="tab_content">
+			@if(shift.mediaCollects.size() == 0) {
+				<div class="well">
+					<em>Nothing to display</em>
+				</div>
+			} else {
+				<table class="table table-bordered">
+					<thead>
+	 				  	 <th style="background-color:#D0F5A9">Media Tenders</th>
+	                     <th style="background-color:#D0F5A9">Media Collects</th>
+	                     <th style="background-color:#D0F5A9">Settlement Amount</th>
+     				</thead>
+					<tbody>
+						@for(mediaCollect <- shift.mediaCollects) {
+    						<tr>	
+    	 						<td> @mediaCollect.mediaTender.name</td>
+        						<td> <input type="text" class="actual" name="@mediaCollect.mediaTender.name" value="@Shift.getShiftMediaCollectedAmount(shift.mediaCollects,mediaCollect.mediaTender.name)" ></td>
+                            
+        						<td> <input type="text" class="settle" name="settle_@mediaCollect.mediaTender.name" value="@Shift.getShiftMediaCollectedSettleAmount(shift.mediaCollects,mediaCollect.mediaTender.name)" ></td>                    
+             				</tr>
+						}
+							<input type="hidden" class="actual_hidden" value="@Shift.getTotalActualMedialCollected(shift)"/>
+							<input type="hidden" class="settle_hidden" value="@Shift.getTotalMedialCollected(shift)"/>
+					</tbody>
+				</table>
+			}
+		</div>
+		<!-- #tab2 -->
+		<h3 class="tab_drawer_heading" rel="tab3">Variance by Media</h3>
+		<div id="tab3" class="tab_content">
+			
+			<table class="table table-bordered">
+    			<tbody>
+        			<thead>
+	 				  	 <th style="background-color:#D0F5A9">Media Variance</th>
+	                     <th style="background-color:#D0F5A9"></th>
+	                     <th style="background-color:#D0F5A9"></th>
+	                     <th style="background-color:#D0F5A9"></th>
+	                </thead> 
+	      			<tr>
+                    	<td> Media Variance Amount</td>
+         				<td> <input type="text" id="shiftVariance" name="shiftVariance" class="shiftVariance" value="@Shift.getShiftMediaDifference(shift)" ></td>
+         				<td> Reason for Media Variance</td>
+         				<td> <input type="text" id="varReason" name="varReason" class="varReason" value="default" ></td>
+                   </tr>
+    			</tbody>
+			</table>
+			
+		</div>
+		<!-- #tab3 -->
+		<h3 class="tab_drawer_heading" rel="tab4">Register Payouts</h3>
+		<div id="tab4" class="tab_content">
+				
+			@if(!isStatusValid("SHIFT").equals("disabled")){
+	
+				<p><label>Search Suppliers</label>
+				<input class="text_field dropdown-toggle" id="paysupplierid" name="searchSuppliers" 
+					placeholder="Search here for Suppliers" type="text" value="" 
+					style="width:203px" onKeyUp="getPayoutSuppliers('REGISTERPAYOUT');"/></p>
+	
+				<p><label>Similar Supplier Names </label>
+				<select class="text_field" id="suppliersid" name="similarSuppliers" size="5" style="width:510px;" onchange="addSuppDetails('REGISTERPAYOUT',@shift.id)" multiple></select>
+				</p>
+	    	       
+			}
+			<table  id="payTabForm" class="table table-bordered">
+	 			<thead>
+                	<th style="background-color:#D0F5A9">Supplier Name</th>
+                	<th style="background-color:#D0F5A9">Supplier ABN</th>
+                	<th style="background-color:#D0F5A9">Total Invoice Amount</th>
+                	<th style="background-color:#D0F5A9">Expense Type</th>
+                	<th style="background-color:#D0F5A9">File Location</th>
+                	<th style="background-color:#D0F5A9">Reason</th>
+                	<th style="background-color:#D0F5A9"></th>
+				</thead>
+				<tbody>
+					 @for(payout <- Payout.getPayoutList(shift.payouts,"REGISTERPAYOUT")) {
+					 
+	                    <tr>
+	                    	<td>@payout.supplier.name</td>
+	                    	<td>@payout.supplier.abn</td>
+	                        <td>
+	                        	<input type="text" id=@{payout.id}_Amt name=@{payout.id}_Amt class="shiftRegPayout" value="@Payout.getPayoutAmount(payout,"REGISTERPAYOUT" )">
+	                        </td>
+	                        <td>
+		                        <select name="@{payout.id}_Exp" id="@{payout.id}_Exp"> 
+									@for(expenseHead <- store.expenseHeads) {
+										<option value="@expenseHead.id"  name="@payout.category" @checkSelected(payout.category,expenseHead.id)>@expenseHead.name </option>
+									} 
+								</select> 
+	                        </td>
+	                        <td>
+		                        <input type="file" name="@{payout.id}_File" id="@{payout.id}_File" value="@payout.invoice" >
+		                        @if(payout.invoice!=null){
+		                        	<a href="javascript:window.open('/INVOICEPROCESSINGSYSTEM/@(payout.invoice)','_blank','toolbar=yes')" class="btn btn-primary" >Preview Invoice</a>
+		                       }
+	                        </td>
+							<td>
+								<textarea id=@{payout.id}_reason name=@{payout.id}_reason cols="30" rows="4">@payout.reason</textarea>
+							</td>
+							<td><INPUT TYPE="Button" CLASS="btn btn-primary" onClick="delRow(@payout.id)" VALUE="Delete Row" @isStatusValid("SHIFT")></td>                  
+	                   </tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		<!-- #tab4 -->
+		<h3 class="tab_drawer_heading" rel="tab5">Payment Amounts</h3>
+		<div id="tab5" class="tab_content">
+			@if(shift.shiftPayments.size() == 0) {
+		    	<div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		    } else {
+				<table class="table table-bordered">
+					<thead>
+	 					<th style="background-color:#D0F5A9">Payment Tender</th>
+	 					<th style="background-color:#D0F5A9">Payment Amount</th>
+	 				</thead> 
+					<tbody>
+						@for(shiftPayment <- shift.shiftPayments) {
+							<tr>
+								<td> @shiftPayment.paymentTender.name</td>
+		    					<td> <input type="text" id="@shiftPayment.paymentTender.name" class ="paymentTender" name="@shiftPayment.paymentTender.name" value="@Shift.getShiftPaymentTenderAmount(shift.shiftPayments , shiftPayment.paymentTender.name)" ></td>
+		                    </tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+		<!-- #tab5 -->
+	</div>
+	<!-- .tab_container -->
+
+  	<!-- bottom div ,for submit and cancel button's -->
+    <div style="height:50px; margin-right:50px;  margin-top:10px;">
+    	<div>
+        	<p style="text-align: right;">  
+			
+				@if((flash.get("pageAction")).equals("MODIFY")){
+					
+					@if(PageAccess.getAccess("edit",session.get("role"),shift,"submit")){
+						<input type="submit" id="btnSubmit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;
+					}else{
+						<input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;" disabled>&nbsp;&nbsp;
+					}
+				}
+			</p>
+	    </div>
+    </div>
+        
+        <!-- div for expense id in javascript,display none -->
+        
+        	<div id="expense" style="display:none">
+		    	@select(
+	                dsrForm("expId"), 
+	                options(ExpenseHead.options), 
+	                 '_default -> "-- Choose a ExpenseHead --",
+	                '_showConstraints -> false
+            	)
+		    </div>
+
+}<!-- form end -->
+
+	</div>
+	</div>
+}<!-- main end -->

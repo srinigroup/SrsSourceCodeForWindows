@@ -1,0 +1,160 @@
+@(weekStartDate : java.util.Date,endDate : java.util.Date, emp:Employee,empId:Long,days:Integer,stDate: java.util.Date,i:Integer)
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/timesheet.css")"> -->
+ <style>
+ 	td[title] {background:#A7C5C2;}
+ </style>   
+    
+@main {
+
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+       							<a href="" onclick="goBack()" class="btn btn-default">TIMESHEET</a>
+       						}
+       						@if((session.get("role")).contains("admin") || (session.get("role")).contains("su") || (session.get("role")).contains("ac") || (session.get("role")).contains("sa")){
+           						<a href="@routes.Timesheets.showSelectPageForHeadOfficeTimeSheet()" class="btn btn-default">HEAD OFFICE TIMESHEET</a>
+           					}
+            				<a href="#" class="btn btn-default">LIST</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           				 	@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					@if((session.get("role")).contains("admin") || (session.get("role")).contains("su") || (session.get("role")).contains("ac") || (session.get("role")).contains("sa") || (session.get("role")).contains("HOE")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+   
+        <div class="table-responsive" style="width: 100%;margin-bottom: 15px;overflow-x:auto;">
+        	
+                	<h3>@emp.firstName.@emp.lastName</h3>
+                	
+        
+        	<table class="table table-bordered" style="background-color: beige;">
+        		<thead style="background-color: gainsboro;">
+                
+                <tr>
+                	<td style="text-align:center;" ><b>DATE</b></td>
+                	@for(i <- 0 to days) {
+                    	<td colspan="4" style="text-align:center;" >@currentDateFormat(Application.getNextDate(weekStartDate,i))</td>
+                    }
+                    <td style="text-align:center;" >TOTAL HRS</td>
+                    
+                </tr>
+                <tr>
+                	<td class ="timesheetTableTD" style="text-align:center;padding : 2px;" >@*<b>NAME</b>*@</td>
+                	@for(i <- 0 to days) {
+                    	<td class ="timesheetTableTD" style="padding:2px 2px 2px 10px;">START</td>
+                    	<td class ="timesheetTableTD" style="padding:2px 2px 2px 5px;">END</td>
+                    	<td class ="timesheetTableTD" style="padding:2px 2px 2px 5px;">HRS</td>
+                    	<td class ="timesheetTableTD" style="padding:2px 2px 2px 10px;">ACTIVITY</td>
+                    	
+                    }
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                    	<td style="text-align:center;"></td>
+                    	
+                    	@for(i <-0 to days){
+                    	<td colspan="4">
+                    		@for(timesheet <- Timesheet.getHeadOfficeTimesheetByEmployeeAndDate(empId,weekStartDate,i+1)){
+                    		
+                    			@if(timesheet.empid == -1){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				<center><b><span style="color:green"></span></b></center>
+                    				</tr>
+                    			</table>
+                    			} 
+                    			@if(timesheet.empid > -1){
+                    			
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.duration</td>
+                    					<td style="padding:2px;width: 65px;max-width: 65px;white-space: nowrap;overflow: hidden;
+                    						text-overflow: clip;cursor: pointer;" title="@timesheet.activity" 
+                    						value="@timesheet.activity" onclick="showActivity(this)">
+                    						@timesheet.activity
+                    					</td>
+                    				}
+                    				
+                    			</tr>
+                    			</table>
+                    			}
+                    		}
+                    		</td>
+                    		}
+                    	
+                    	 <td style="vertical-align: middle;">@Timesheet.getTotalHeadOfficeTimesheetHours(empId,weekStartDate,endDate)</td>
+                    </tr>
+            </tbody>
+         </table>
+       </div>
+     </div>
+    </div>
+  
+</div>
+    
+   	<!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog" style="margin-top:150px;">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #e7e7e7;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title" style="text-align:center;font-size:16px;"><b>Activity</b></h5>
+        </div>
+        <div class="modal-body" style="background: url(/assets/images/bg.png) #5CCAEA;margin-bottom:-20px;height: 150px">
+          <p id="modelBodyP" style="font-size:20px;text-align:center;overflow-y: scroll;height: 130px;padding: 0px;
+          	margin: 0px -20px 0px -10px;word-wrap: break-word;"></p>
+        </div>
+        <div class="modal-footer" style="background-color: #e7e7e7;text-align:center;">
+          <button type="button" class="btn btn-success" data-dismiss="modal" style="font-size:18px;">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>			
+}
+
+            

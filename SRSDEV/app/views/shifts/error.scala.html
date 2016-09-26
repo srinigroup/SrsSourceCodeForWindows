@@ -1,0 +1,22 @@
+@(msg: String)
+
+@import helper._ 
+@import helper.twitterBootstrap._
+
+
+@main{
+
+	
+        <div class="alert-message warning">
+            <strong>Error!</strong> <h2>@msg</h2>
+        </div>
+
+	
+	
+	
+<p class="accnav">
+
+
+<a href="@routes.Shifts.list()" class="btn primary">Go Back</a> 
+ </p>	
+}

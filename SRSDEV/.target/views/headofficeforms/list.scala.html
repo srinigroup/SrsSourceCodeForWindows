@@ -1,0 +1,85 @@
+@(hoFormList : List[HoForm])
+@import helper._ 
+@import helper.twitterBootstrap._
+
+
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						<a href="" class="btn btn-default">HEAD OFFICE FORMS</a>
+            				<a href="#" class="btn btn-default">UPLOADED</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           				  @if((session.get("role")).contains("sa") || (session.get("role")).contains("admin")){
+           					<a href="@routes.HoForms.showHoFormUploadPage()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 }
+          				 @if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+          				 <a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 }
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	
+		<!-- display list based on selected date -->
+		
+			@if(hoFormList.size() == 0) {
+        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        <div class="table-responsive">
+		        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+		        		<thead style="background-color: gainsboro;">
+		                <tr>
+		                    <th>File Name</th>
+		                    
+		                    <th>Uploaded Date</th>
+		                    
+		                    <th>FormType</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+						 @if(hoFormList.size() == 0){
+		                <div class="well">
+           					 <em>Nothing to display</em>
+        				</div>
+		                }else{
+		                @for(hoForm <- hoFormList) {
+		                    <tr>
+		                        <td><a href="/INVOICEPROCESSINGSYSTEM/@hoForm.filePath" id="employeeLink" class="fancyboxPDF" title="@hoForm.fileName" onclick="OpenFancyBoxForHeadOfficeFormsView('@hoForm.id');">@hoForm.fileName</a></td>
+		                        <td>@hoForm.uploadedDate</td>
+		                        <td>@hoForm.formType</td>
+		                       
+		                    </tr>
+		                }
+		                }
+		            </tbody>
+		         </table>
+		       </div>
+		        
+		    }
+	
+		</div>
+	</div>
+	
+} <!-- main ends -->

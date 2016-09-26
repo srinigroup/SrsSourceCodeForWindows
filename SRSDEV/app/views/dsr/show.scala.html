@@ -1,0 +1,92 @@
+
+@( dsrForm: Form[DailySalesReconciliation],dsrObject: DailySalesReconciliation, store: Store)
+ @import helper._ 
+ @import helper.twitterBootstrap._
+
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("SALES RECONCILIATION","ALL")" class="btn btn-default">SALES RECONCILIATION</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("SALES RECONCILIATION","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+     
+@helper.form(action = routes.DailySalesReconciliations.update(dsrObject.id)) {
+	
+	
+	<h3>@store.name Sales</h3>
+		
+		<hr/>
+		<br/>
+	<div class="table-responsive">
+		<table class="table table-bordered" style="background-color: white;border-color: #fff;">
+			 <tr>
+				
+				<td>
+					@helper.inputText(dsrForm("todayDate"), '_label -> "Created Date",'readonly -> "readonly")
+				</td>
+				<td> 
+					 <div class="clearfix" id="date_field">
+    									<label for="LastReportingDate">Last Reporting Date</label>
+    									<div class="input">
+											<input type="text" name="LastReportingDate" value="@DailySalesReconciliation.getLastReportingBusinessDate(store.id)" readonly="readonly"/>
+										</div>
+					</div>
+				</td>
+				
+				<td>
+					@helper.inputText(dsrForm("store.name"), '_label -> "Store Name",'readonly -> "readonly")
+				</td>
+			</tr>	
+			<tr>
+				<td>
+					@helper.inputText(dsrForm("reportingBusinessDate"), '_label -> "Reporting Business Date",'readonly -> "readonly")
+				</td>
+				<td>
+					@helper.inputText(dsrForm("store.cashInSafe"), '_label -> "Cash in Safe",'readonly -> "readonly")
+				</td>
+				<td>
+					
+					@select(
+  				 dsrForm("status"),
+  				 options(Seq("OPEN","SUBMITTED")),
+ 				 '_label -> "Status", '_default -> "-- Select Status --"
+				)</td>
+			</tr>
+		</table>
+       </div>
+		
+      		
+      	
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+       
+  
+}<!-- form end -->
+
+	</div>
+	</div>
+
+}<!-- main end -->

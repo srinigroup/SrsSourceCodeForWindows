@@ -1,0 +1,368 @@
+@(employeeForm: Form[Employee], contactForm: Form[ContactInfo], addressForm: Form[Address],bankAccountForm: Form[BankAccountInfo] )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("STAFF","ALL")" class="btn btn-default">STAFF</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("STAFF","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+     
+@helper.form(action = routes.Employees.save(), 'enctype -> "multipart/form-data") {
+
+	<!-- panel-group -->
+	<div class="panel-group" id="accordion">
+		
+		<!-- panel-primary 1-->
+   		<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionOne">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+            			Employee Details
+            			<i class="icon-unlock icon-large pull-right"></i>
+             		</h4>
+             	</a>  
+        	</div>
+        	<div id="accordionOne" class="panel-collapse collapse in">
+          		<div class="panel-body">
+          			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+								<td> @helper.inputText(employeeForm("firstName"), '_label -> "First Name")</td>
+								<td>@helper.inputText(employeeForm("lastName"), '_label -> "Last Name")</td>
+							</tr>
+							<tr>
+								<td>@helper.inputText(employeeForm("shortName"), '_label -> "Short Name(if any)")</td>
+								<td>@select(
+					  				 employeeForm("gender"),
+					  				 options(Seq("Female","Male")),
+					 				 '_label -> "Gender", '_default -> "-- Select Gender --"
+									)</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="clearfix" id="dob_field">
+    									<label for="dob">Date of Birth</label>
+    									<div class="input">
+											<input type="text" name="dob" class="datepicker1"/>
+										</div>
+									</div> 
+								</td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+            	</div>
+        	</div>
+      	</div><!-- panel-primary 1 End-->
+      	
+      	<!-- panel-primary 2-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionTwo">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Contact Info
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionTwo" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+								<td>
+									 @helper.inputText(contactForm("phone1"), '_label -> "Phone1 :")
+								</td>
+								
+								<td>
+									 @helper.inputText(contactForm("email"), '_label -> "E-Mail :", 'onblur -> "javascript:checkForUnique(this,'EMPLOYEE','EMAIL');")
+								</td>
+							</tr>
+							<tr>
+								<td>  @helper.inputText(contactForm("phone2"), '_label -> "Phone2") </td>
+								
+								
+								<td>
+									@helper.inputText(contactForm("phone2"), '_label -> "Facsmile :")
+								</td>
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 2 End-->
+      	
+      	<!-- panel-primary 3-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionThree">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Address
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionThree" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr colspan=2>
+								<td>
+									<p><label>Search Address</label>
+									<input class="text_field" id="addressid" name="searchAddress" type="text" value="" style="width:500px;" onblur="getParsedAddress();getSimilar();"/></p>
+									<p><label>Similar Addresses </label>
+				                  	<select class="text_field" id="similarAddressesid" name="similarAddresses" size="5" style="width:510px;" onchange="similarAddressesChange()" multiple></select></p>
+				                </td>
+								<td></td>
+							</tr>
+							<tr>
+								<td> @helper.inputText(addressForm("street"), '_label -> "Street")</td>
+								
+								<td> @helper.inputText(addressForm("city"), '_label -> "City :") </td>
+								
+							</tr>
+							<tr>
+								<td>@helper.inputText(addressForm("number"), '_label -> "Number :")  </td>
+								
+								
+								<td>
+									@helper.inputText(addressForm("state"), '_label -> "State :")
+								</td>
+							</tr>
+							<tr>
+								<td> @helper.inputText(addressForm("postalCode"), '_label -> "PostalCode :") </td>
+								
+								<td>  @helper.inputText(addressForm("country"), '_label -> "Country :") </td>
+								
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 3 End-->
+      	
+      	<!-- panel-primary 4-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionFour">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Employement Info
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionFour" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+				
+								<td> @select(
+					                employeeForm("company.id"), 
+					                options(Company.options), 
+					                '_label -> "Company", '_default -> "-- Choose a company --",
+					                '_showConstraints -> false
+					            	)
+								</td>
+				
+								<td> @select(
+					                employeeForm("store.id"), 
+					                options(Store.options), 
+					                '_label -> "Store", '_default -> "-- Choose a store --",
+					                '_showConstraints -> false
+					            	)
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="clearfix" id="ecd_field">
+    									<label for="ecd">Employment Commence Date</label>
+    									<div class="input">
+											<input type="text" name="ecd" class="datepicker1" />
+										</div>
+									</div> 
+								</td>
+			
+								<td>
+									@select(
+						  				 employeeForm("empStatus"),
+						  				 options(Seq("Full-time","Part-time","Casual")),
+						 				 '_label -> "Employment Status :", '_default -> "-- Choose a Status --"
+									)
+								</td>
+							</tr>
+							<tr>
+								<td> @helper.inputText(employeeForm("sal"), '_label -> "Approved Hourly Rate/Annual Salary :")	</td>
+			
+								<td>
+									@select(
+					  				 employeeForm("designation"),
+					  				 options(Seq("Accountant","Customer Service Officer","Retail Area Manager","Store Manager")),
+					 				 '_label -> "Designation :", '_default -> "-- Select Designation --"
+									)
+								</td>
+		  
+		 
+		  					</tr>
+		  					<tr >
+								<td>
+									<div class="control-group @if(employeeForm("isTaxFree").hasErrors){ error }">
+					    	    	<label class="control-label" for="isTaxFree"> Applying for Tax Free Threshold :</label>
+					        		<div class="controls">
+					            		<span class="buttonset" id="isTaxFree">
+					            			<label class="radio inline">
+					                			<input type="radio" name="isTaxFree" value="Y" 
+					            	   					@if(employeeForm("id").value == null) { checked } >Yes</label>    
+					                		<label class="radio inline">
+					                			<input type="radio" name="isTaxFree" value="N">No</label>    
+					                	</span>
+					            	</div>
+		  						</td>
+		  	  					<td></td>
+		  					</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 4 End-->
+      	
+      	
+      	<!-- panel-primary 5-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionFive">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Bank Account Info
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionFive" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+				
+								<td>
+									 @helper.inputText(bankAccountForm("accountName"), '_label -> "Account Name :")
+								</td>
+				
+								<td>
+									 @helper.inputText(bankAccountForm("accountNumber"), '_label -> "Account Number :")
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@select(
+					  				 bankAccountForm("accountType"),
+					  				 options(Seq("Current","Savings")),
+					 				 '_label -> "Account Type", '_default -> "-- Select Account Type --"
+									)
+								</td>
+								<td>
+									@helper.inputText(bankAccountForm("bankName"), '_label -> "Bank Name :")
+								</td>
+							</tr>
+							<tr>
+								<td>  @helper.inputText(bankAccountForm("bsbNumber"), '_label -> "BSB Number") </td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 5 End-->
+      	
+      	<!-- panel-primary 6-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionSix">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Others
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionSix" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-bordered" >
+							<tr>
+								<td>  @helper.inputFile(employeeForm("tfndf"), '_label -> "Tax File Number Declaration Form :") </td>
+							
+							</tr>
+							<tr>
+								<td>  @helper.inputFile(employeeForm("saf"), '_label -> "Super Annuation Form :") </td>
+							
+							</tr>
+							<tr>
+								<td>  @helper.inputFile(employeeForm("resume"), '_label -> "Resume :") </td>
+								
+							</tr>
+							<tr>
+								<td>  @helper.inputFile(employeeForm("payroll"), '_label -> "Payroll Form :") </td>
+							
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 6 End-->
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+    
+    </div><!-- panel-group End-->
+  
+}<!-- form end -->
+
+	</div>
+	</div>
+
+}<!-- main end -->
+ 

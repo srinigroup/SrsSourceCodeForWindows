@@ -1,0 +1,24 @@
+.google-visualization-table-table {
+ font-size:14px;
+
+}
+.google-visualization-table-tr-head{
+color: #000000;
+/*background-color:#99e6e6;*/
+background-color:#9fdf9f;
+font-size:13px;
+}
+.google-visualization-table-tr-head tbody{
+font-size:13px;
+}
+#visualizationtable {
+
+text-align:center;
+}
+.google-visualization-table-tr-odd {
+
+	background-color:beige;
+}
+google-visualization-table-tr-even {
+	background-color:antiquewhite;
+}

@@ -1,0 +1,158 @@
+@(id:Long, reportList : List[MonthlyReport], month : Integer, year : Integer)
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@checkSelectedYear(newYear:Integer) =@{
+
+	val result="selected"
+	if(year == null){
+		if(Calendar.getInstance().get(Calendar.YEAR) == newYear){
+		
+			result
+		}
+	}else{
+	
+		if(newYear == year){
+		
+			result
+		}
+	}
+}
+
+@checkSelected(newMonth:Integer) = @{
+
+	val result="selected"
+		if(newMonth == month){
+			result
+		}
+}
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						<a href="@routes.MonthlyReports.showUploadPage()" class="btn btn-default">Monthly Reports</a>
+            				<a href="#" class="btn btn-default">UPLOADED</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.MonthlyReports.showUploadPage()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.MonthlyReports.displayUploaded(id)) {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="reportingYear_field">
+								<label for="reportingYear">Year</label>
+									<div class="input">
+										<select name="reportingYear" required>
+						            		<option class="blank" value="">-- Choose a Year --</option>
+						            		@for(i <- 2014 to 2025) {
+						  						<option value="@i" @checkSelectedYear(i)>@i</option>
+						  					}
+						  					
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	
+  						<td>
+            				<div class="clearfix" id="reportingMonth_field">
+								<label for="reportingMonth">Month</label>
+									<div class="input">
+										<select name="reportingMonth" required>
+						            		<option class="blank" value="">-- Choose a Month --</option>
+						  					@for(i <- 0 to 11) {
+						  						<option value="@i" @checkSelected(i)>@Application.getMonthForInt(i)</option>
+						  					}
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+
+						
+					  	<td>
+            					<input type="submit" value="Get Uploaded Reports" class="btn btn-primary" style="margin-top:7px">
+					  	</td>
+					  	
+            		</tr>
+            	</table>
+         	</div>
+		
+	} <!-- form ends -->
+	
+		<!-- display list based on selected date -->
+		
+			@if(reportList.size() == 0) {
+        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        <div class="table-responsive">
+		        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+		        		<thead style="background-color: gainsboro;">
+		                <tr>
+		                    <th>File Name</th>
+		                    
+		                    <th>Uploaded Date</th>
+		                    
+		                    <th>Report Type</th>
+		                    
+		                    <th>Month</th>
+		                    
+		                </tr>
+		            </thead>
+		            <tbody>
+		
+		                @for(report <- reportList) {
+		                    <tr>
+		                        <td><a href="/INVOICEPROCESSINGSYSTEM/@report.filePath" class="fancyboxPDF" title="@report.fileName" onclick="OpenFancyBoxForJustView('@report.id');">@report.fileName</a></td>
+		                        <td>@report.uploadedDate</td>
+		                        <td>@report.reportType</td>
+		                        <td>@report.reportingMonth</td>
+		                    </tr>
+		                }
+		
+		            </tbody>
+		         </table>
+		       </div>
+		        
+		    }
+	
+		</div>
+	</div>
+	
+} <!-- main ends -->

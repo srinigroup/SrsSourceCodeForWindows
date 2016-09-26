@@ -1,0 +1,34 @@
+@(id: Long, totalSalesHeadForm: Form[TotalSalesHead])
+
+@import helper._
+ @import helper.twitterBootstrap._
+
+
+@main{
+    
+    
+    <P class="pull-left" style="padding-left:150px"><h1>Edit TotalSalesHead</h1></P>
+    
+   @helper.form(action = routes.TotalSalesHeads.update(id)) {     
+        <fieldset>
+        
+           @helper.inputText(totalSalesHeadForm("name"), '_label -> "Name")
+         	@helper.inputText(totalSalesHeadForm("category"), '_label -> "Category")
+         
+           
+           
+        
+        </fieldset>
+        
+        <div class="pull-left" style="padding-left:100px"> 
+            <input type="submit" value="Save this TotalSalesHead" class="btn primary"> or 
+            <a href="@routes.TotalSalesHeads.list()" class="btn">Cancel</a> 
+            <a href="@routes.TotalSalesHeads.delete(id)" class="btn danger">Delete</a> 
+             
+        </div>
+        
+    }
+    
+   
+    
+}

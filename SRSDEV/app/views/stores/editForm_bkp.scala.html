@@ -1,0 +1,415 @@
+
+@(id:Long, storeForm: Form[Store], contactForm: Form[ContactInfo], addressForm: Form[Address],store:Store )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ @checkSelected(headType:String, id:Long) = @{
+    
+    var result = ""
+    if(headType.equals("saleshead")){
+	    for(saleshead <- store.salesHeads) {
+	       if(saleshead.id==id){
+	       	
+	       	result = "checked"
+	       	}
+	    }
+	  }
+	  else if(headType.equals("totalsaleshead")){
+	    for(totalsaleshead <- store.totalSalesHeads) {
+	       if(totalsaleshead.id==id){
+	       	
+	       	result = "checked"
+	       	}
+	    }
+	  }
+	  else if(headType.equals("mediatender"))
+	  {
+	    for(mediatender <- store.mediaTenderHeads) {
+	       if(mediatender.id==id){
+	       	
+	       	result = "checked"
+	       	}
+	    }
+	  }
+	  else if(headType.equals("terminalhead"))
+	  {
+	    for(terminalhead <- store.terminalHeads) {
+	       if(terminalhead.id==id){
+	       	
+	       	result = "checked"
+	       	}
+	    }
+	  }
+	  else {	  
+	  for(expensehead <- store.expenseHeads) {
+	       if(expensehead.id==id){
+	       	
+	       	result = "checked"
+	       	}
+	  
+	 	 }
+	  }
+    result
+}
+
+@checkSelectedSupp(id:String,sid:String)=@{
+	
+	var result = "";
+	
+	if(id==sid){
+       	
+       	result = "selected";
+       	}
+    
+    result
+
+}
+
+@import java.lang.String; var display = "";
+
+@if(DailyReconciliations.getOPENStatus(store.id)){
+
+	@{display="disabled"}
+
+}
+
+@main{
+
+ @if(flash.containsKey("DROpenStatusError")) {
+        <div class="alert-message warning">
+            <strong>Error!</strong> @flash.get("DROpenStatusError")
+        </div>
+    } 
+ 
+@helper.form(action = routes.Stores.update(id)) {
+
+		
+    <article class="accordion">
+	<section id="acc1" class="active">
+		<h2><a href="#acc1">Store Details</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+		<table>
+			<tr>
+				<td> @select(
+                storeForm("company.id"), 
+                options(Company.options), 
+                '_label -> "Company", '_default -> "-- Choose a company --",
+                '_showConstraints -> false
+            )
+				</td>
+				
+				
+					<td>@helper.inputText(storeForm("name"), '_label -> "Store Name:")</td>
+				
+			</tr>
+			<tr>
+				<td>@helper.inputText(storeForm("description"), '_label -> "Store Description:")</td>
+				<td></td>
+				
+			</tr>
+		</table>
+	<!--	<p class="accnav"><a href="#acc2">next ➧</a></p> -->
+	</section>
+	
+	<section id="acc2">
+		<h2><a href="#acc2">Contact Info</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+		<table>
+			<tr>
+				
+				<td>
+					 @helper.inputText(contactForm("phone1"), '_label -> "Store phone1 :")
+				</td>
+				
+				<td>
+					 @helper.inputText(contactForm("email"), '_label -> "Store E-Mail :")
+				</td>
+			</tr>
+			<tr>
+				<td>  @helper.inputText(contactForm("phone2"), '_label -> "Store phone2") </td>
+				
+				
+				<td>
+					@helper.inputText(contactForm("phone2"), '_label -> "Facsmile :")
+				</td>
+			</tr>
+		</table>
+		
+	</section>
+	
+	<section id="acc3">
+		<h2><a href="#acc3">Address</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+	
+		<table>
+		<tr colspan=2>
+				<td>
+				<p><label>Search Address</label>
+				<input class="text_field" id="addressid" name="searchAddress" type="text" value="" style="width:500px;" onblur="getParsedAddress();getSimilar();"/></p>
+
+				
+				<p><label>Similar Addresses </label>
+                  <select class="text_field" id="similarAddressesid" name="similarAddresses" size="5" style="width:510px;" onchange="similarAddressesChange()" multiple></select>
+                 
+				</p>
+				</td>
+				
+				
+			</tr>
+			<tr>
+				<td> @helper.inputText(addressForm("street"), '_label -> "Street")</td>
+				
+				<td> @helper.inputText(addressForm("city"), '_label -> "City :") </td>
+				
+			</tr>
+			<tr>
+				<td>@helper.inputText(addressForm("number"), '_label -> "Number :")  </td>
+				
+				
+				<td>
+					@helper.inputText(addressForm("state"), '_label -> "State :")
+				</td>
+			</tr>
+			<tr>
+				<td> @helper.inputText(addressForm("postalCode"), '_label -> "PostalCode :") </td>
+				
+				<td>  @helper.inputText(addressForm("country"), '_label -> "Country :") </td>
+				
+			</tr>
+		</table>
+		
+	</section>
+	<section id="acc4">
+		<h2><a href="#acc4" >Head Mappings</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+	<div id="tabpanel">
+					<ul id="boxLinks">
+                	<li><a href="#box1" id="tab1">SalesHeads</a></li>
+                	<li><a href="#box2" id="tab2">MediaTenders</a></li>
+                	<li><a href="#box3" id="tab3">ExpenseHeads</a></li>
+                	<li><a href="#box4" id="tab4">TotalSalesHeads</a></li>
+                	<li><a href="#box5" id="tab5">TerminalHeads</a></li>
+                </ul>
+                
+      <div id="box" class="box" > 
+               
+           
+       <div id="box1" class="box" >        	       
+   
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(saleshead <- SalesHead.all()) {
+                    <tr>
+                        <td><input type="checkbox" id="@saleshead.id" name="salesheadslist[]" value="@saleshead.id"  @checkSelected("saleshead",saleshead.id) /> @saleshead.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+     
+     </div>
+     
+     <div id="box2" class="box" >
+     
+  
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(mediatender <- MediaTender.all()) {
+                    <tr>
+                        <td><input type="checkbox" id="@mediatender.id" name="mediatenderslist[]" value="@mediatender.id" @checkSelected("mediatender",mediatender.id) /> @mediatender.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+     
+                	
+     </div>
+     
+     <div id="box3" class="box" >
+                	
+  
+        
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(expensehead <- ExpenseHead.all()) {
+                    <tr>
+                        <td><input type="checkbox" id="@expensehead.id" name="expenseheadslist[]" value="@expensehead.id"  @checkSelected("expensehead",expensehead.id) /> @expensehead.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+             	
+      </div>
+      
+       <div id="box4" class="box" >        	       
+   
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(totalsaleshead <- TotalSalesHead.all()) {
+                    <tr>
+                        <td><input type="checkbox" id="@totalsaleshead.id" name="totalsalesheadslist[]" value="@totalsaleshead.id"  @checkSelected("totalsaleshead",totalsaleshead.id) /> @totalsaleshead.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+     
+     </div>
+       <div id="box5" class="box" >        	       
+   
+        <table class="computers zebra-striped">
+           
+            <tbody>
+
+                @for(terminalhead <- TerminalHead.all()) {
+                    <tr>
+                        <td><input type="checkbox" id="@terminalhead.id" name="terminalheadslist[]" value="@terminalhead.id"  @checkSelected("terminalhead",terminalhead.id) /> @terminalhead.name</td>
+                                            
+                             
+               </tr>
+               }
+
+            </tbody>
+        </table>
+     
+     </div>
+      
+      
+   </div>
+            
+     
+    
+</section>
+  <section id="acc5">
+<h2><a href="#acc5" >Supplier Mappings</a></h2>
+		<hr/>
+		<br/>
+		<br/>
+		<p><label>Search Suppliers</label>
+				<input class="text_field" id="supplierid" name="searchStores" type="text" value="" style="width:500px;" onblur="getSuppliers()"/></p>
+
+				
+		<p><label>Similar Supplier Names </label>
+                <!--  <select class="text_field" id="similarSuppliersid" name="similarSuppliers" size="5" style="width:510px;" onchange="similarSupplierChange()" multiple></select> -->
+                  <select class="text_field" id="similarSuppliersid" name="similarSuppliers" size="5" style="width:510px;" onchange="similarSupplierChange1(@store.id)" multiple></select>
+        </p>
+       
+        <table  id="cblist" class="computers zebra-striped">
+        
+        	<thead>
+               
+                	<th style="background-color:#D0F5A9">Supplier Name</th>
+                	<th style="background-color:#D0F5A9">Supplier ABN</th>
+                	<th style="background-color:#D0F5A9">Payment Terms</th>
+                	<th style="background-color:#D0F5A9">Payment Mode</th>
+                	<th style="background-color:#D0F5A9"></th>
+                
+            </thead>
+            
+            <tbody>
+             <div id="paymentTermsDiv" style="display:none">
+                        
+							<select id="paymentTerms" name="paymentTerms" >
+								<option class="blank" value="">-- Choose a Payment Term --</option>
+			  					<option value=SUPP_SM_PT_1 >As per Invoice</option>
+		                        <option value=SUPP_SM_PT_2 >Due Date</option>
+		                        <option value=SUPP_SM_PT_3 >Fortnightly</option>
+		                        <option value=SUPP_SM_PT_4 >Monthly</option>
+		                        <option value=SUPP_SM_PT_5 >Quarterly</option>
+		                        <option value=SUPP_SM_PT_6 >Same Day</option>
+		                        <option value=SUPP_SM_PT_7 >Twice a Week</option>
+		                        <option value=SUPP_SM_PT_8 >Weekly</option>
+		                        <option value=SUPP_SM_PT_9 >Weekly Monday</option>
+		                        <option value=SUPP_SM_PT_10 >10 Days</option>
+                            </select>   
+                          </div> 
+                <div id="paymentModeDiv" style="display:none">
+                       
+							<select id="paymentMode" name="paymentMode" >
+								<option class="blank" value="">-- Choose a Payment Mode --</option>
+			  					<option value=SUPP_SM_PM_1 >BPay</option>
+		                        <option value=SUPP_SM_PM_2 >Cash</option>
+		                        <option value=SUPP_SM_PM_3 >DD</option>
+		                        <option value=SUPP_SM_PM_4 >EFT</option>
+		                        <option value=SUPP_SM_PM_5 >EFT/Cash</option>
+                            </select> 
+                          </div>  
+			 @for(supplierMapping <- store.supplierMapping) {
+                    <tr>
+                        <td>@supplierMapping.supplier.name</td>
+                        <td>@supplierMapping.supplier.abn</td>
+                        <td>
+                         
+							<select  name=@{supplierMapping.id}_paymentTerms >
+								
+		                        <option class="blank" value="">-- Choose a Payment Term --</option>
+			  					<option value=SUPP_SM_PT_1 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_1")>As per Invoice</option>
+		                        <option value=SUPP_SM_PT_2 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_2")>Due Date</option>
+		                        <option value=SUPP_SM_PT_3 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_3")>Fortnightly</option>
+		                        <option value=SUPP_SM_PT_4 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_4")>Monthly</option>
+		                        <option value=SUPP_SM_PT_5 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_5")>Quarterly</option>
+		                        <option value=SUPP_SM_PT_6 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_6")>Same Day</option>
+		                        <option value=SUPP_SM_PT_7 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_7")>Twice a Week</option>
+		                        <option value=SUPP_SM_PT_8 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_8")>Weekly</option>
+		                        <option value=SUPP_SM_PT_9 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_9")>Weekly Monday</option>
+		                        <option value=SUPP_SM_PT_10 @checkSelectedSupp(supplierMapping.paymentTerms,"SUPP_SM_PT_10")>10 Days</option>
+                            </select>   
+                  		</td>              
+                         <td>
+                         <select  name=@{supplierMapping.id}_paymentMode >
+								
+		                        <option class="blank" value="">-- Choose a Payment Mode --</option>
+			  					<option value=SUPP_SM_PM_1 @checkSelectedSupp(supplierMapping.paymentMode,"SUPP_SM_PM_1")>BPay</option>
+		                        <option value=SUPP_SM_PM_2 @checkSelectedSupp(supplierMapping.paymentMode,"SUPP_SM_PM_2")>Cash</option>
+		                        <option value=SUPP_SM_PM_3 @checkSelectedSupp(supplierMapping.paymentMode,"SUPP_SM_PM_3")>DD</option>
+		                        <option value=SUPP_SM_PM_4 @checkSelectedSupp(supplierMapping.paymentMode,"SUPP_SM_PM_4")>EFT</option>
+		                        <option value=SUPP_SM_PM_5 @checkSelectedSupp(supplierMapping.paymentMode,"SUPP_SM_PM_5")>EFT/Cash</option>
+                            </select> 
+                  		</td>
+                  		<td><INPUT TYPE="Button" id="b_@{supplierMapping.supplier.id}" CLASS="btn primary" onClick="delSupplierMapping(@supplierMapping.id)" VALUE="Delete"></td>
+                  		
+               </tr>
+               }
+               
+            </tbody>
+        </table>
+      
+</section>        
+<section id="acc6" style="height:auto; ">
+<p class="accnav"><input type="submit" class="btn primary" @display>  
+<a href="@routes.Stores.list()" class="btn">Cancel</a> 
+@if(display.equals("")){
+ <a href="@routes.Stores.delete(id)" class="btn danger">Delete</a>
+ }
+ </p>
+</section>
+</article>
+
+}
+
+}

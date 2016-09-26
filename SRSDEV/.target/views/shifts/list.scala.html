@@ -1,0 +1,213 @@
+@(currentPage: com.avaje.ebean.Page[Shift], currentSortBy: String, currentOrder: String, currentFilter: String, store:Store, pageAction: String)
+
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.Shifts.list(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@shiftlink(storeId:Long, term_head:String) = @{
+    
+      // Generate the link
+    routes.Shifts.showBlank(storeId, term_head,pageAction)
+    
+}
+
+
+@checkSelected(newFilter:String) = @{
+
+	var result=""
+ if(currentFilter == newFilter){
+	result="selected"
+ }
+ 	result
+ 
+}
+
+@display()= @{
+
+var result = "";
+
+	
+		if(Shifts.getOPENStatus()){
+		   result = "disabled";
+		}	
+									  
+
+result;
+}
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+@main {
+    
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("SHIFT","ALL")" class="btn btn-default">SHIFT</a>
+            				<a href="#" class="btn btn-default">@pageAction</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("SHIFT","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+  
+
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+    
+      @if(flash.containsKey("ShiftErr")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("ShiftErr")
+        </div>
+    } 
+
+     <div id="actions">
+        
+        <table>
+        	<tr>
+        		<td> 
+        			<form action="@link(0, "status")" method="GET">
+          				<p class="pull-left" style="padding-top:-10px">
+      					<select name="f" id="searchbox">
+			            	<option value="OPEN" @checkSelected("OPEN")>OPEN / SAVED</option>
+			            	<option value="" @checkSelected("")>ALL</option>
+			            	<option value="SUBMITTED" @checkSelected("SUBMITTED")>SUBMITTED</option>
+            			</select>
+            			<input type="submit" id="searchsubmit" value="Filter by Status" class="btn btn-info">
+           				</p> 
+       			 	</form>
+        		</td>
+        		
+        	</tr>
+        </table>
+         
+ </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        <div class="table-responsive">
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+        		<thead style="background-color: gainsboro;">
+                <tr>
+                    @header("shiftStartDateTime", "Shift StartTime")
+                  
+                    @header("shiftEndDateTime", "Shift EndTime")
+                    
+                    <th>Terminal</th>
+                    
+                    <th>Shift Sales</th>
+                      
+                   	<th>Media Collects</th>
+                        
+                    <th>Register Payouts</th>
+                        
+                    @header("shiftVariance", "Variance")
+                        
+                     <th>Shift Owner</th>
+                      
+                     @header("status", "Status")
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @for(shift <- currentPage.getList) {
+									  
+					<tr>
+						<td><a href="@routes.Shifts.edit(shift.id,store.id,flash.get("pageAction"))">@shift.shiftStartDateTime</a></td>
+											
+						<td>@shift.shiftEndDateTime</td>	
+						<td>@shift.terminal.terminalHead.name</td>					
+						<td>@Shift.getTotalSales(shift)</td>		
+						<td>@Shift.getTotalMedialCollected(shift)</td>		
+						<td>@Shift.getTotalPayoutsbyType(shift,"REGISTERPAYOUT")</td>		
+						<td>@Shift.getTotalVariance(shift)</td>		
+						<td>@Timesheet.getEmployee(shift)</td>		
+						<td>@shift.status</td>				
+					</tr>
+					}
+
+            </tbody>
+         </table>
+       </div>
+
+        <div id="pagination" class="pager">
+            <ul>
+                @if(currentPage.hasPrev) {
+                    <li class="previous">
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="previous disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li class="next">
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+    }
+    
+     </div>
+    </div>
+        
+}
+
+              

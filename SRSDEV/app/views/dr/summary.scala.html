@@ -1,0 +1,113 @@
+@(weekDate:java.util.Date,empId:Long)
+
+
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+@timesheetList=@{
+
+ import java.util.List
+ 
+val list=Timesheet.getTimesheetbyEmployee(empId,weekDate,Application.getNextDate(weekDate,6));
+
+list
+}
+
+<script>
+			function closeWindow1(){
+					
+						//alert("inside close window");
+						window.close();
+			 }
+</script>
+
+
+<html>
+<head>
+ 
+<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")"> 
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
+        <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/accordion.css")"> 
+        
+   		
+   		 <script type="text/javascript" src='@routes.Application.javascriptRoutes()'></script>
+   		 
+   		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+   		 <!-- <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"></script>-->
+   
+
+
+</head>
+<body>
+
+<center><h1>TimeSheet Summary</h1></center>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+            	<thead>
+                <tr style="background-color:#58ACFA">
+                   
+                 	 <th>Thursday</th>
+                     <th>Friday</th>
+                     <th>Saturday</th>
+                         
+                      <th>Sunday</th>
+                      <th>Monday</th>
+                      <th>Tuesday</th>
+                      <th>Wednesday</th>
+                     
+                      
+                       
+                      
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+               
+                    <tr>
+                        <td> @currentDateFormat(weekDate) </td>
+                        
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,1)) </td>
+                        
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,2))</td>
+                         
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,3))</td>
+                        
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,4))</td> 	
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,5))</td> 	
+                        <td> @currentDateFormat(Application.getNextDate(weekDate,6))</td> 	
+                       	
+                       
+                          
+                    </tr>
+                    
+                    <tr>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(weekDate,timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,1),timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,2),timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,3),timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,4),timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,5),timesheetList)</td>
+                    	<td>@Timesheet.getDurationForMultipleTimesheets(Application.getNextDate(weekDate,6),timesheetList)</td>
+                    </tr>
+                   
+
+            </tbody>
+        </table>
+		</div>
+			 <center><input type="button" value="Close" CLASS="btn primary" onclick="closeWindow1()"/></center>
+</body>
+</html>
+

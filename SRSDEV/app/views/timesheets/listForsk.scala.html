@@ -1,0 +1,173 @@
+@(currentPage: com.avaje.ebean.Page[Timesheet], currentSortBy: String, currentOrder: String, currentFilter: String, store:Store, pageAction: String)
+
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.Timesheets.listForsk(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+
+
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+  
+@main {
+    
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("EMP TIMESHEET","ALL")" class="btn btn-default">EMP TIMESHEET</a>
+            				<a href="#" class="btn btn-default">@pageAction</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("EMP TIMESHEET","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+  
+
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+     <div id="actions">
+        
+        <form action="@link(0, "todayDate")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            <input type="text" class="datepicker1" id="searchbox" name="f" value="@currentFilter" readonly='readonly' >
+          	<input type="hidden"  name="pg" value="@pageAction"/>
+            <input type="submit" id="searchsubmit" value="Filter by date" class="btn btn-info">
+            </p>
+          </form> 
+    </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        <div class="table-responsive">
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+        		<thead style="background-color: gainsboro;">
+                <tr>
+                    @header("date", "Timesheet Date ")
+                  
+                    @header("duration", "Timesheet Duration")
+                    
+                    @header("empid", "Employee")
+                    
+                  
+                      
+                    @header("jobTitle", "Job Title")
+                   
+                     @header("status", "Status")
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @for(timesheet <- currentPage.getList) {
+									  
+					<tr>
+						<!-- make sure add flash variable pageAction -->
+						<td><a href="@routes.Timesheets.editForsk(timesheet.id,store.id,flash.get("pageAction"))">@currentDateFormat(timesheet.date)</a></td>	
+						<td>@timesheet.duration</td>					
+						<td>@Employee.getEmployee(timesheet.empid)</td>		
+							
+						<td>@timesheet.jobTitle</td>		
+						<td>@timesheet.status</td>	
+									
+					</tr>
+					
+					}
+
+            </tbody>
+         </table>
+       </div>
+
+        <div id="pagination" class="pager">
+            <ul>
+                @if(currentPage.hasPrev) {
+                    <li class="previous">
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="previous disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li class="next">
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+    }
+    
+     </div>
+    </div>
+        
+}
+
+  

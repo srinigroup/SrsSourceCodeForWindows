@@ -1,0 +1,170 @@
+body{
+
+font-family: 'Roboto', sans-serif;
+
+}
+
+#navLinks a{
+
+       font-size: 16px;
+	font-weight: normal;
+	margin: 0;
+	valign:center;
+	 width:75%;
+}
+p.error {
+        color: #c00;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px rgba(0,0,0,.1);
+    }
+p.success {
+        color: #83BD41; 
+        margin-bottom: 10px;
+        text-shadow: 1px 1px rgba(0,0,0,.1);
+    }
+
+h1
+{
+	font-size: 1.5em;
+	font-weight: normal;
+	margin: 0;
+}
+
+h2
+{
+	font-size: 1.3em;
+	font-weight: normal;
+	margin: 2em 0 0 0;
+}
+hr
+{
+ display: block; height: 1px;
+    border: 1; border-top: 1px solid #666;
+    background-color: #666;
+    margin: 1em 0; padding: 0;
+ }
+p
+{
+	margin: 0.7em 0;
+}
+
+p.accnav
+{
+	font-size: 1.1em;
+	text-transform: uppercase;
+	text-align: right;
+}
+
+p.accnav a
+{
+	text-decoration: none;
+	color: #999;
+}
+
+article.accordion
+{
+	display: block;
+	width: 90em;
+	padding: 0.5em 0.5em 1px 0.5em;
+	margin: 0 auto;
+	background-color: #666;
+	border-radius: 5px;
+	box-shadow: 0 3px 3px rgba(0,0,0,0.3);
+}
+
+article.accordion section 
+{
+	display: block;
+	width: 88em;
+	height: 2em;
+	padding: 0 1em;
+	margin: 0 0 0.5em 0;
+	color: #333;
+	background-color: #333;
+	overflow: hidden;
+	border-radius: 3px;
+}
+
+
+article.accordion section h2
+{
+	font-size: 1em;
+	font-weight: bold;
+	width: 100%;
+	line-height: 2em;
+	padding: 0;
+	margin: 0;
+	color: #ddd;
+}
+
+article.accordion section1 h2
+{
+	font-size: 1em;
+	font-weight: bold;
+	width: 100%;
+	line-height: 2em;
+	padding: 0;
+	margin: 0;
+	color: #ddd;
+}
+article.accordion section h2 a
+{
+	display: block;
+	width: 100%;
+	line-height: 2em;
+	text-decoration: none;
+	color: inherit;
+	outline: 0 none;
+}
+
+article.accordion section,
+article.accordion section h2
+{
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+}
+
+article.accordion section:target 
+{
+	height: auto;
+	background-color: #fff;
+}
+
+
+article.accordion section:target h2
+{
+	font-size: 1.6em;
+	color: #333;
+}
+
+.active 
+{
+	color: #fff; background: #ccc;
+}
+
+ 
+       
+        
+       
+        /* Stuff for tabs - including conditionals below */
+        
+        #tabpanel { position: relative; width: 100%;margin:0; padding:0; }
+      
+        #boxLinks {  overflow: hidden; margin-bottom: -1px;}
+        #boxLinks li {  display: inline; }
+        #boxLinks li a { padding: 10px 10px; color: black; text-decoration: none; border: 1px solid #ccc; float: left; display: block;  position: relative; left: 1px; }
+        #boxLinks li a:hover{ color: #fff; background: #000; }
+        #box { height: 250px; border: 1px solid #ccc; overflow: hidden; padding: 0px 30px 0px 30px; position: relative; top: -1px; }
+        .box { display: none; height: 250px; overflow: auto; display: block; position: relative; overflow-x: hidden; }
+       
+      
+		 
+   
+
+
+
+     
+ 

@@ -1,0 +1,271 @@
+@(currentPage: com.avaje.ebean.Page[DailyReconciliation], currentSortBy: String, currentOrder: String, currentFilter: String, store:Store, pageAction: String)
+
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.DailyReconciliations.list(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@link1(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.DailyReconciliations.listByDate(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@checkSelected(newFilter:String) = @{
+
+	var result=""
+ if(currentFilter == newFilter){
+	result="selected"
+ }
+ 	result
+ 
+}
+
+@display()= @{
+
+var result = "";
+
+		if(DailyReconciliations.getOPENStatus(store.id)){
+		   result = "disabled";
+		}							  
+
+result;
+}
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+ 
+ @main {
+    
+   
+   <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")" class="btn btn-default">DAILY RECONCILIATION</a>
+            				<a href="#" class="btn btn-default">@pageAction</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+	
+	  @if(flash.containsKey("success")) {
+        <div class="alert-message warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+    <div id="actions">
+     	
+     	<form action="@link(0, "status")" method="GET">
+	     	<p class="pull-left" style="padding-top:-10px">
+		      	<select name="f" id="searchbox">
+		            	<option value="OPEN" @checkSelected("OPEN")>OPEN</option>
+		            	<option value="" @checkSelected("")>ALL</option>
+		            	<option value="SUBMITTED" @checkSelected("SUBMITTED")>SUBMITTED</option>
+		        </select>
+		        <input type="submit" id="searchsubmit" value="Filter by Status" class="btn btn-info">
+		    </p>
+        </form>
+        
+        
+    </div>
+    
+     <div id="actions">
+        
+        <form action="@link1(1, "date")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            @*<input type="text" class="datepicker1" id="searchbox" name="f" placeholder="Filter By date"  readonly='readonly' >*@
+            <input type="text" name="f" placeholder="Filter By date" class="startDatePicker" required  />
+            <input type="submit" id="searchDatesubmit" value="Filter by date" class="btn btn-info">
+            </p>
+          </form> 
+    </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <div class="table-responsive"> 
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+            	<thead style="background-color: gainsboro;">
+                	<tr>
+                     	<th>Created Date</th>
+                  
+                    @header("reportingBusinessDate", "Reporting Business Date")
+                    
+                       
+                    
+                    
+                      @header("store.name", "Store Name")
+                      
+                        <th>Cash in Safe</th>
+                        
+                         <th>Cheques in Safe</th>
+                         
+                         <th>Total Sales Reported</th>
+                      
+                       @header("status", "Status")
+                	</tr>
+            	</thead>
+            	<tbody>
+
+	               @for(dsr <- currentPage.getList) {
+                    <tr>
+                        <td><a href="@routes.DailyReconciliations.edit(dsr.id,flash.get("pageAction"))">@currentDateFormat(dsr.createDate)</a></td>
+                       
+                       
+                        <td>
+                            @if(dsr.reportingBusinessDate == null) {
+                                <em>-</em>
+                            } else {
+                            
+                            	@currentDateFormat(dsr.reportingBusinessDate)
+                               
+                            }
+                        </td>
+                        
+                        
+                         
+                         <td>
+                            @if(store.name == null) {
+                                <em>-</em>
+                            } else {
+                                @store.name  
+                            }
+                        </td>
+                      
+                         <td>
+                            @if(dsr.open_cash  == null) {
+                                <em>-</em>
+                            } else {
+                              @dsr.close_cash
+                               
+                            }
+                        </td>
+                        <td>
+                            @if(dsr.open_cheque == null) {
+                                <em>-</em>
+                            } else {
+                                @dsr.close_cheque
+                               
+                            }
+                        </td>
+                       	 	<td>
+								@DailySalesReconciliation.getTotalSalesAmount(dsr.dsr)
+							</td>
+                          <td>
+                            @if(dsr.status == null) {
+                                <em>-</em>
+                            } else {
+                                @dsr.status 
+                            }
+                        </td>
+                    </tr>
+                }
+
+
+            	</tbody>
+        	</table>
+        </div>
+
+        <div id="pagination" class="pager">
+            <ul>
+                @if(currentPage.hasPrev) {
+                    <li class="previous">
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="previous disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li class="next">
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+    }
+    
+     </div>
+    </div>
+        
+}
+ 

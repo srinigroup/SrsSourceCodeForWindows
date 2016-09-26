@@ -1,0 +1,232 @@
+@(headOfficeTimeSheetForm:Form[Timesheet],store:Store,emp:Employee)
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ 
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script> 
+	    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/ui-darkness/jquery-ui.min.css" rel="stylesheet">
+ 
+</script>
+ <script>
+ $(function() {
+  
+	$( "#hoDate" ).datepicker({  
+    maxDate: new Date(),
+    onSelect: function(){
+    var selected = $(this).val();
+    $("#hoEndDate").val(selected)
+    }
+    ,dateFormat: "dd/mm/yy"});
+	
+		});
+</script>
+   
+@main{
+
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("ADD TIMESHEET","ALL")" class="btn btn-default">TIMESHEET</a>
+            				<a href="#" class="btn btn-default">ADD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("ADD TIMESHEET","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         	<br><br>
+         	
+         	@if(flash.containsKey("success")) {
+       			<div class="alert alert-warning">
+            		<strong>Done!</strong> @flash.get("success")
+        		</div>
+    		}
+	
+  
+  	@helper.form(action = routes.Timesheets.saveForHeadOfficeTimeSheet(store.id,emp.id), 'id -> "timesheetForm", 'onsubmit -> "return getRowCount();") {
+		
+
+		<h2>Time Sheet </h2>
+		<hr/>
+		<br/>
+		<br/>
+        	
+          			<div class="table-responsive"> 
+          			<input type="hidden" id="firmid" value="@store.id">
+        				<table class="table table-bordered" style="background-color: white;border-color: #fff;">
+							<tr>
+								<td>
+									<div class="input">
+									        
+									 	<input type="text" value="@emp.id" id="empid"  readonly='readonly' style="display:none;"/><h1>@emp.firstName.@emp.lastName</h1>
+									
+									 <span class="help-inline"></span>
+									</div>	
+								</td>
+								<td>
+									<div class="clearfix  " id="date_field">
+		    							<label for="date">Date</label>
+		    								<div class="input">
+		        
+		    									<input type="text" id="hoDate" name="date" class="startDatePicker"  required/>
+		    									<label id="hoDateErrorLabel" style="display:none; color:red">Please Select Date.</label>
+		
+		        
+		    								</div>
+									</div>
+								</td>
+								<td  style="display:none;>
+								<div class="clearfix  " id="endDate_field">
+	    							<label for="endDate">End Date</label>
+	    								<div class="input">
+	        
+	    									<input type="text" id="hoEndDate" name="endDate" class="endDatePicker" required/>
+	
+	    								</div>
+									</div>
+								</td>
+								
+								<td>
+									 <input type="checkbox" name="applyLeave" id="applyLeaveCheckBoxHO" /> Leave
+									 
+									<div class="clearfix" id="leaveType_field" style="display:none;">
+    									<label for="leaveType">Leave Type</label>
+    										<div class="input">
+    											<select id="leaveType" name="leaveType" required>
+    												 <option class="blank" value="None">-- Choose Type --</option>
+										             <option value="AL" >AL</option>
+							                         <option value="SL" >SL</option>
+							                         <option value="PH" >PH</option>
+							                    </select> 
+    										</div>
+									</div>
+								
+								</td>
+								
+									<input type="hidden" name="firmid" value="@store.id" id="firmName"/>
+									<input type="hidden" id="rowCountHidden" name="rowCountHidden">
+								
+							</tr>	
+							<tr>
+								
+								<td>
+									<div class="clearfix  " id="timesheetStartTime_field">
+    									<label for="timesheetStartTime">Start Time</label>
+    										<div class="input">
+    											<select id="startTimeHour" name="startTimeHour" required onblur="durationHeadOfficeFromStartEnd()">
+    												 <option class="blank" value="">-- Hour --</option>
+										             @for(i <- 0 to 9) {
+    													<option value="0@i" >0@i</option>
+													 }
+													  @for(i <- 10 to 23) {
+    													<option value="@i" >@i</option>
+													 }
+							                    </select>
+							                    
+							                    <select id="startTimeMins" name="startTimeMins" required onblur="durationHeadOfficeFromStartEnd()">
+    												 <option class="blank" value="">-- Min's --</option>
+										             <option value="00" >00</option>
+							                         <option value="15" >15</option>
+							                         <option value="30" >30</option>
+							                         <option value="45" >45</option>
+							                    </select> 
+							                    <label id="startTimeHourErrorLabel" style="display:none; color:red">Please Select Start Hours.</label>
+							                    <label id="startTimeMinsErrorLabel" style="display:none; color:red">Please Select Start Mins.</label>
+    										</div>
+									</div>
+								</td>
+								
+								<td>
+									<div class="clearfix  " id="timesheetEndTime_field">
+    									<label for="timesheetEndTime">End Time</label>
+    										<div class="input">
+    											<select id="endTimeHour" name="endTimeHour" required onblur="durationHeadOfficeFromStartEnd()">
+    												 <option class="blank" value="">-- Hour --</option>
+    												 @for(i <- 0 to 9) {
+    													<option value="0@i" >0@i</option>
+													 }
+													  @for(i <- 10 to 23) {
+    													<option value="@i" >@i</option>
+													 }
+    												
+							                    </select>
+							                    
+							                    <select id="endTimeMins" name="endTimeMins" required onblur="durationHeadOfficeFromStartEnd()">
+    												 <option class="blank" value="">-- Min's --</option>
+										             <option value="00" >00</option>
+							                         <option value="15" >15</option>
+							                         <option value="30" >30</option>
+							                         <option value="45" >45</option>
+							                    </select> 
+							                     <label id="endTimeHourErrorLabel" style="display:none; color:red">Please Select End Hours.</label>
+							                     <label id="endTimeMinsErrorLabel" style="display:none; color:red">Please Select End Mins.</label>
+    										</div>
+									</div>
+								</td>
+								
+								<td>
+									@helper.inputText(headOfficeTimeSheetForm("duration"), '_label -> "Duration", 'readonly -> "readonly")
+								</td>
+								<td>
+								<div class="clearfix  " id="activity_field">
+								Activity:
+								<textarea id="hOTextarea" style="height:80%;width:100%"  maxlength="250" onkeydown="checkActivityTextLength()" ></textarea>
+								<p id="activityTextLength"  style="color:red;font-size:15px;">Note:Max length is 250 characters only.</p>
+								<label id="hoActivityErrorLabel" style="display:none; color:red">Please Enter Activity</label>
+								
+								</div>
+								</td>
+								<td>
+								<div class="clearfix  " id="addButton_field">
+								<input type="button" value="Add" class="btn btn-primary" id="hOTSheetButton"  onclick="addTimeSheetHours(@emp.id)"/>
+								</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="table-responsive" id="headOfficeTimeSheetTable_field" style="display:none;">
+						<table id="headOfficeTimeSheetTable" class="table table-bordered">
+				        	<thead>
+					 			<th style="background-color:#D0F5A9">Start TimeHour</th>
+					 			<th style="background-color:#D0F5A9">Start TimeMin</th>
+					            <th style="background-color:#D0F5A9">End TimeHour</th>
+					            <th style="background-color:#D0F5A9">Start TimeMin</th>
+					            <th style="background-color:#D0F5A9">Duration</th>
+					            <th style="background-color:#D0F5A9">Activity</th>
+					            <th style="background-color:#D0F5A9"></th>
+					            
+				            </thead> 
+				            <tbody>
+				            </tbody>
+						</table>
+  					</div>
+					
+            
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /"><input type="submit" id="btnSubmit" class="btn btn-large btn-success" style="padding-right:40px; padding-left:40px; text-align:center;" >&nbsp;&nbsp;  
+				
+		    </div>
+        </div>
+        
+    
+    
+
+
+	}<!-- form end -->
+	
+	</div>
+	</div>
+
+}<!-- main end -->
+
+   

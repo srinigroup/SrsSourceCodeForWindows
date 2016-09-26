@@ -1,0 +1,73 @@
+ @import helper._ 
+ @import helper.twitterBootstrap._
+
+@main{   
+	 	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/reports.css")">
+	
+
+<form id="ajaxform" action="@routes.Reports.getReport()" method="POST">
+
+  <h1><center> <h1>Srini Group DashBoard</h1></center></h1><br><br>
+  	
+  	<div>
+  		<table style="background-color: white;border-color: #fff;">
+  			<tr>
+  				<td><b>Start Date :</b> <input type="text" name="reportStartDate" class="datepicker1"  readonly='readonly'/></td>
+  				<td><b>End Date : </b><input type="text" name="reportEndDate" class="datepicker1"  readonly='readonly'/> </td>
+  				<td><b>Store : </b><select name="reportStore">
+  					<option value="ALL">ALL</option>
+  					@for(store <- Stores.getStoresList()){
+  						<option value="@store.id">@store.name</option>
+  					}
+  				</select> </td>
+  			</tr>
+  			<tr>
+  				
+  				<td><b>Category&nbsp;&nbsp; </b><select name="byType" id="byType">
+  					<option value="sales">Sales</option>
+  					<option value="media">MediaTender</option>
+  					<option value="invoices">Invoices</option>
+  					<option value="ReconciliationReport">Reconciliation Report</option>
+  				</select></td>
+				<td><b>SortBy : </b><select name="sortBy" id="sortBy">
+					<option value="DATE">DATE</option>
+  					<option value="STORE">STORE</option>
+  				</select> </td>
+  				
+  				<td><input type="submit" id="reportButton" class="btn primary" name="reportButton" value="GetReport"/>
+  				<input type="reset" class="btn"  value="Reset"/> </td>
+  			</tr>
+  		</table>
+  		<div id="sortByDiv" style="display:none">
+  					<select  id="sortBySelectTagForSales">
+					<option value="DATE">DATE</option>
+  					<option value="STORE">STORE</option>
+  					</select>
+  					<select  id="sortBySelectTagForSupp">
+  					<option value="DATE">DATE</option>
+  					<option value="STORE">STORE</option>
+					<option value="SUPPLIER">SUPPLIER</option>
+  					<option value="PAYTERMS">PAYTERMS</option>
+  					</select>
+  		</div>
+  	</div>
+  	
+  	  
+      <br/>
+	
+   <table> 
+     <tr><td><div id="visualizationtable" style="height:300px; width: 1000px;"></div> </td>
+     
+     <tr><td> <div id="visualizationbar" style="height:400px; width: 1000px;"> </div></td></tr>
+      </table>
+      
+      <!-- div's for pop up -->
+      <div id="modal_chart" class="modal" style="display:none">
+       <button id="popUpClose"><span>X</span></button>
+	  <div id="chart_div" style="height: 350px;" > 
+	  </div>
+	 
+	</div> 
+ </form>
+
+ }    

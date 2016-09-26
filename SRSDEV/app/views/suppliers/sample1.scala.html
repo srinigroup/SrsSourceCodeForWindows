@@ -1,0 +1,17 @@
+@(supplierForm: Form[Supplier])
+
+ @import helper._ 
+ @import helper.twitterBootstrap._
+@main{
+  <h1>Company form</h1>
+@helper.form(action = routes.Suppliers.save()) {
+    <fieldset> 
+         <legend> New Supplier</legend>    
+	
+    @helper.inputText(supplierForm("name"))      
+	@helper.textarea(supplierForm("description"))    
+</fieldset>    
+<input type="submit" class="btn primary">  
+<a href="@routes.Suppliers.list()" class="btn">Cancel</a> 
+}
+}

@@ -1,0 +1,184 @@
+@(employee : Employee )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ 
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+	if(currDate != null){
+  curTimeFormat.format(currDate)
+  }
+}
+
+
+@main{
+ 
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default"><div>PROFILE</div></a>
+      					</div>
+        			</span>
+            		<span class="pull-right">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		
+         		 <br><br><br>
+
+	<!-- panel-group -->
+	<div class="panel-group" id="accordion">
+		
+		<!-- panel-primary 1-->
+   		<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionOne">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+            			Employee Details
+            			<i class="icon-unlock icon-large pull-right"></i>
+             		</h4>
+             	</a>  
+        	</div>
+        	<div id="accordionOne" class="panel-collapse collapse in">
+          		<div class="panel-body">
+          			<div class="table-responsive"> 
+        				<table class="table table-hover  table-striped profileTable">
+							<tr>
+								<td><b>First Name</b></td><td>@employee.firstName</td>
+								<td><b>Last Name</b></td><td>@employee.lastName</td>
+							</tr>
+							<tr>
+								<td><b>Short Name(if any)</b></td><td>@employee.shortName</td>
+								<td><b>Gender</b></td><td>@employee.gender</td>
+							</tr>
+							<tr>
+								<td><b>Date Of Birth</b></td><td>@currentDateFormat(employee.dob)</td>
+								<td></td><td></td>
+							</tr>
+						</table>
+					</div>
+            	</div>
+        	</div>
+      	</div><!-- panel-primary 1 End-->
+      	
+      	<!-- panel-primary 2-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionTwo">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Contact Info
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionTwo" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-hover  table-striped profileTable">
+							<tr>
+								<td><b>Primary phone1</b></td><td>@employee.contactInfo.phone1</td>
+								<td><b>Primary E-Mail</b></td><td>@employee.contactInfo.email</td>
+							</tr>
+							<tr>
+								<td><b>Secondary phone2</b></td><td>@employee.contactInfo.phone2</td>
+								<td><b>Facsmile</b></td><td>@employee.contactInfo.facsimile</td>
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 2 End-->
+      	
+      	<!-- panel-primary 3-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionThree">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Address
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionThree" class="panel-collapse collapse">
+          		<div class="panel-body">
+           			<div class="table-responsive"> 
+        				<table class="table table-hover  table-striped profileTable">
+        					<tr>
+								<td><b>Street :</b></td><td>@employee.address.street</td>
+								<td><b>City :</b></td><td>@employee.address.city</td>
+							</tr>
+							<tr>
+								<td><b>Number :</b></td><td>@employee.address.number</td>
+								<td><b>State :</b></td><td>@employee.address.state</td>
+							</tr>
+							<tr>
+								<td><b>PostalCode :</b></td><td>@employee.address.postalCode</td>
+								<td><b>Country :</b></td><td>@employee.address.country</td>
+							</tr>
+						</table>
+					</div>
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 3 End-->
+      	
+      	
+      	<!-- panel-primary 4-->
+      	<div class="panel panel-primary">
+        	<div class="panel-heading">
+            	<a data-toggle="collapse" data-parent="#accordion" href="#accordionFour">
+          			<h4 class="panel-title">
+          				<i class="icon-reorder"></i>&nbsp;
+              			Employement  Information
+              			<i class="icon-lock icon-large pull-right"></i>
+          			</h4>
+                </a>
+        	</div>
+        	<div id="accordionFour" class="panel-collapse collapse">
+          		<div class="panel-body">
+          		
+           			<div class="table-responsive"> 
+        				<table class="table table-hover  table-striped profileTable">
+        					<tr>
+								<td><b>Company :</b></td><td>@employee.company</td>
+								<td><b>Store :</b></td><td>@employee.store</td>
+							</tr>
+							<tr>
+								<td><b>Employment Commence Date :</b></td><td>@currentDateFormat(employee.ecd)</td>
+								<td><b>Approved Hourly Rate/Annual Salary :</b></td><td>@employee.sal</td>
+							</tr>
+							<tr>
+								<td><b>Designation :</b></td><td>@employee.designation</td>
+								<td></td><td></td>
+							</tr>
+						</table>
+					</div>
+					
+      			</div>
+        	</div>
+      	</div><!-- panel-primary 4 End-->
+      	
+    </div><!-- panel-group End-->
+
+
+
+					</div> <!-- span 12 -->
+        		</div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+     	
+}<!-- main end -->
+
+   

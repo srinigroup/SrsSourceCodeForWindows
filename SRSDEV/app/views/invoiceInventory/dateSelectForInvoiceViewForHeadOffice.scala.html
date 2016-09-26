@@ -1,0 +1,185 @@
+@(invoiceList : List[Invoice], sid:Long, startDate : Date, endDate : Date,supplierName:String,invoiceStatus:String)
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@checkSelected(id:Long)= @{
+	val result="selected"
+		if(sid != null){
+			if(sid == id){
+				result
+			}
+		}
+}
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+  
+	if(currDate != null){
+		curTimeFormat.format(currDate)
+	}
+  
+}
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						<a href="@routes.InvoiceInventory.showUploadPageForHeadOffice()" class="btn btn-default">INVOICE</a>
+            				<a href="#" class="btn btn-default">UPLOADED</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.InvoiceInventory.showUploadPageForHeadOffice()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.InvoiceInventory.displayUploadedForHeadOffice()) {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="storeId">Select Store</label>
+									<div class="input">
+										<select name="storeId" id="invoiceStoreList" required>
+						            		<option class="blank" value="">-- Choose a Store --</option>
+						  					@for(store <- Stores.getStoresList()){
+						  						<option value="@store.id" @checkSelected(store.id)>@store.name</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+							<div class="clearfix  " id="date_field">
+		    					<label for="date">Start Date</label>
+		    					<div class="input">
+		        					<input type="text" name="invoiceStartDate" value="@currentDateFormat(startDate)" class="startDatePicker">
+		    					</div>
+							</div>
+						</td>
+						
+						<td>
+							<div class="clearfix  " id="endDate_field">
+		    					<label for="endDate">End Date</label>
+		    					<div class="input">
+		        					<input type="text" name="invoiceEndDate" value="@currentDateFormat(endDate)" class="endDatePicker" >
+		    					</div>
+							</div>
+						</td>
+						</tr>
+						<tr>
+						
+						<td>
+							<div class="clearfix  " id=searchbox_field">
+		    					<label for="searchbox">Search By Supplier</label>
+		    					<div class="input">
+									<input type="search" id="searchboxInInvoice" name="s" value="@supplierName" placeholder="Filter by Supplier name...">
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="clearfix  " id="invoice_status_field">
+		    					<label for="invoice_status">Select Status</label>
+		    					<div class="input">
+								<select name="invoice_status" id="invoice_status">
+									<option value="ALL">ALL</option>
+									<option value="UPLOADED">UPLOADED</option>
+									<option value="PROCESSED">PROCESSED</option>
+									<option value="PAID">PAID</option>
+								</select>
+								</div>
+							</div>
+						</td>
+					  	<td>
+            					<input type="submit" value="Get Invoices" class="btn btn-primary" style="margin-top:7px">
+					  	</td>
+					  	</tr>
+			</table>
+		
+	} <!-- form ends -->
+						@*<td>
+							@helper.form(action =routes.InvoiceInventory.getInvoicesBySupplierNameInHeadOffice(), 'id -> "searchSupplierWiseForm"){
+							<select  name="store_id" id="store_id" required>
+							<option class="blank" value="">--Choose Store--</option>
+							@for(store <- Store.all()){
+							<option  value="@store.id" @checkSelected(store.id)>@store.name</option>
+							}
+							</select>
+							<input type="search" id="searchboxInInvoice" name="s" value="@supplierName" placeholder="Filter by Supplier name..." style="margin-top: 18px;" required />
+							<input type="submit" id="searchsubmitInInvoice" value="Filter by Supplier " class="btn btn-info" style="background-color:green;font-size:14px;" required />
+							</td>
+							</tr>
+	            	</table>
+	        
+	}*@
+	
+		<!-- display list based on selected date -->
+		
+			@if(invoiceList.size() == 0) {
+        
+		        <div class="well">
+		            <em>Nothing to display</em>
+		        </div>
+		        
+		    } else {
+		        <div class="table-responsive">
+		        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+		        		<thead style="background-color: gainsboro;">
+		                <tr>
+		                    <th>File Name</th>
+		                    
+		                    <th>Uploaded Date</th>
+		                    
+		                    <th>InvoiceType</th>
+		                    
+		                    <th>Store</th>
+		                    
+		                    <th>Status</th>
+		                    
+		                </tr>
+		            </thead>
+		            <tbody>
+		
+		                @for(invoice <- invoiceList) {
+		                    <tr>
+		                        <td><a href="/INVOICEPROCESSINGSYSTEM/@invoice.filePath" class="fancyboxPDF" title="@invoice.fileName" onclick="OpenFancyBoxForJustView('@invoice.id');">@invoice.fileName</a></td>
+		                        <td>@invoice.uploadedDate</td>
+		                        <td>@invoice.invoiceType</td>
+		                        <td>@Store.find.byId(invoice.storeId)</td>
+		                        <td>@invoice.status</td>
+		                    </tr>
+		                }
+		
+		            </tbody>
+		         </table>
+		       </div>
+		        
+		    }
+	
+		</div>
+	</div>
+		<input type="hidden" id="statusSelectedInInvoice" name="statusSelectedInInvoice" value="@invoiceStatus">
+	
+} <!-- main ends -->

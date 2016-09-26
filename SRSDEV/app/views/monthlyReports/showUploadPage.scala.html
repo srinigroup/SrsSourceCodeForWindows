@@ -1,0 +1,123 @@
+@(id:Long)
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@checkSelectedYear(newYear:Integer) =@{
+
+	val result="selected"
+	if(Calendar.getInstance().get(Calendar.YEAR) == newYear){
+		
+		result
+	}
+}
+
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">Monthly Reports</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.MonthlyReports.uploadReports(id),'enctype -> "multipart/form-data") {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="reportingYear_field">
+								<label for="reportingYear">Year</label>
+									<div class="input">
+										<select name="reportingYear" required>
+						            		<option class="blank" value="">-- Choose a Year --</option>
+						            		@for(i <- 2014 to 2025) {
+						  						<option value="@i" @checkSelectedYear(i)>@i</option>
+						  					}
+						  					
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	
+  						<td>
+            				<div class="clearfix" id="reportingMonth_field">
+								<label for="reportingMonth">Month</label>
+									<div class="input">
+										<select name="reportingMonth" required>
+						            		<option class="blank" value="">-- Choose a Month --</option>
+						  					@for(i <- 0 to 11) {
+						  						<option value="@i" >@Application.getMonthForInt(i)</option>
+						  					}
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            			<td>
+            				<div class="clearfix" id="reportType_field">
+								<label for="reportType">ReportType</label>
+									<div class="input">
+										<select name="reportType" required>
+						            		<option class="blank" value="">-- Choose a Report Type --</option>
+						  					<option value="AC Holder Statements">AC Holder Statements</option>
+						  					<option value="Monthly Report">Monthly Report</option>
+						  					<option value="Sira Reports">SIRA  Reports</option>
+						  					
+						  					<option value="Others">Others</option>
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+            				<div class="clearfix" id="invoiceFiles_field">
+								<label for="invoiceFiles">Select Files</label>
+									<div class="input">
+										<input type="file" id="invoiceFiles" name="invoiceFiles" accept="application/pdf" multiple="multiple" onchange="javascript:updateList()" required />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            		</tr>
+            	</table>
+         	</div>
+		
+		 
+        
+        <span id="displaySelected" style="display:none;"><b>Selected Files:</b></span>
+		<div id="fileList" style="background-color: white;border-color: #fff;"></div><br/>
+		
+        <center><input type="submit" value="Upload" class="btn btn-primary"></center>
+        
+        
+	
+	} <!-- form ends -->
+	
+		
+		<a href="@routes.MonthlyReports.showUploadedReports(id)" class="pull-right btn btn-success">Uploaded Monthly Reports</a>
+	
+		</div>
+	</div>
+	
+} <!-- main ends -->

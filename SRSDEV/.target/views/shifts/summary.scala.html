@@ -1,0 +1,183 @@
+@(dsrObject:DailySalesReconciliation, store: Store,shift:Shift )
+
+
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@main {
+    
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("SHIFT","ALL")" class="btn btn-default">SHIFT</a>
+            				<a href="@routes.Application.showOptions("SHIFT",flash.get("pageAction"))" class="btn btn-default">@flash.get("pageAction")</a>
+            				<a href="#" class="btn btn-default">SUMMARY</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("SHIFT","MODIFY")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+  
+   @* removing payout error
+     @if(flash.containsKey("payoutErr")) {
+         <div class="alert alert-warning">
+            <strong>Note:</strong> @flash.get("payoutErr")
+        </div>
+    } *@
+    
+    @if(flash.containsKey("mediaErr")) {
+         <div class="alert alert-warning">
+            <strong>Error!</strong> @flash.get("mediaErr")
+        </div>
+    } 
+
+
+		
+	@helper.form(action = routes.Shifts.submit(shift.id)){
+
+			<center><h3>Shift Summary</h3></center>
+	<style>
+	table {
+		height: 5px;
+	    border: 1px solid black;
+	    
+	}
+	</style>
+
+<div class="table-responsive" align="center">
+<TABLE BORDER="1" WIDTH="500" class="table table-bordered">
+<TR>
+<TD WIDTH=250 style="background-color:white">
+<TABLE BORDER="1" WIDTH="250" class="table table-bordered">
+<TR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Media Takings</b>
+
+</TR>
+		<TR>
+			<TD  style="background-color:white"><b><u>Media</u></b></TD>
+			<TD  style="background-color:white"><b><u>Net Takings</u></b></TD>	
+		</TR>
+		
+		
+		@for(mediaTenderHead <- store.mediaTenderHeads) {
+                    <tr>
+                    	 <td style="background-color:white"> @mediaTenderHead.name</td>
+                        <td style="background-color:white">@Shift.getShiftMediaCollectedSettleAmount(shift.mediaCollects,mediaTenderHead.name)</td>
+                                            
+                             
+              		 </tr>
+		}
+		
+		<tr>
+               			<td style="background-color:white">Payouts</td>
+               			<td style="background-color:white">@Shift.getTotalPayoutsbyType(shift,"REGISTERPAYOUT")</td>
+         </tr>
+         
+         @for(paymentTender <- store.paymentTenders) {
+                    <tr>
+                    	 <td style="background-color:white"> @paymentTender.name</td>
+                        <td style="background-color:white">@Shift.getShiftPaymentTenderAmount(shift.shiftPayments,paymentTender.name)</td>
+                                            
+                             
+              		 </tr>
+		}
+               		
+		<TR>
+			<TD  style="background-color:white"><b>Total Net Takings</b></TD>
+			<TD  style="background-color:white"><b>@Shift.getTotalNetTakings(shift,"REGISTERPAYOUT")</b></TD>	
+		</TR>	
+			
+		
+
+
+
+</TABLE>
+</TD>
+<TD WIDTH="250" style="background-color:white">
+<TABLE BORDER="1" class="table table-bordered">
+<TR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>Account Totals</b>
+
+</TR>
+		
+		<TR>
+			<TD  style="background-color:white">Total Gross Sales</TD>
+			<TD  style="background-color:white">@Shift.getTotalSales(shift)</TD>	
+		</TR>
+		
+		<TR>
+			<TD  style="background-color:white">Media Difference</TD>
+			<TD  style="background-color:white">@Shift.getShiftMediaDifference(shift)</TD>	
+		</TR>
+		
+		<TR>
+			<TD  style="background-color:white"> Shift Variance</TD>
+			<TD  style="background-color:white">@Shift.getTotalVariance(shift)</TD>	
+		</TR>
+		
+		<TR>
+			<TD  style="background-color:white">- Customer Invoices</TD>
+			<TD  style="background-color:white">@{Shift.getShiftSale(shift.shiftSales,"ACCOUNT SALES").amount}</TD>	
+		</TR>
+		
+		<TR>
+			<TD  style="background-color:white">+ POS Payments</TD>
+			<TD  style="background-color:white">@{Shift.getShiftSale(shift.shiftSales,"ACCOUNT RECV").amount}</TD>	
+		</TR>
+		
+		<TR>
+			<TD  style="background-color:white"><b>Net POS Takings</b></TD>
+			<TD  style="background-color:white"><b>@Shift.getNetPOSTakings(shift)</b></TD>	
+		</TR>
+		
+		
+</TABLE>
+	
+	@if(Shift.getTotalVariance(shift).toDouble != 0){
+		<b> Reason for Shift Variance : </b> <input type="text" name="shiftVarReason" pattern=".{5,255}" required title="Min 5 to Max 255 characters" />
+	}else{
+		<input type="hidden" name="shiftVarReason" value="No Variance" />
+	}
+	
+</TD>
+</TR>
+</TABLE>
+</div>
+
+
+<p style="text-align: right;">
+
+@if((flash.containsKey("payoutErr"))){
+       <input type="submit"  class="btn btn-primary" >
+    } 
+
+<a href="@routes.Shifts.edit(shift.id,store.id,"MODIFY")" class="btn btn-default">Edit Shift</a> 
+
+</p>
+
+
+
+}
+     
+    
+    
+     </div>
+    </div>
+        
+}
+
+              

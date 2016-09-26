@@ -1,0 +1,496 @@
+
+@(id:Long, dsrForm: Form[DailyReconciliation],dsrObject: DailyReconciliation, store: Store )
+ @import helper._ 
+ @import helper.twitterBootstrap._
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script> 
+	    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/ui-darkness/jquery-ui.min.css" rel="stylesheet">
+  <style>
+    .datepicker{
+     
+    }
+  </style>
+ 
+
+ 
+  <script>
+  function viewTimesheet(empId,weekStartDate){
+  
+  	
+  
+  	  //var weekStartDate = document.getElementsByName("startdate")[0].value;
+  	  weekStartDate = weekStartDate.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'-');
+  	  
+  	 window.open("/drs/summary/"+empId+"/"+weekStartDate ,'_blank','toolbar=yes');
+  
+  
+  }
+  
+ 
+  
+  function enableThursday(date) {
+
+  var day = date.getDay();
+ // If day == 1 then it is MOnday
+ if (day == 4) {
+ 
+ return [true] ; 
+ 
+ } else { 
+ 
+ return [false] ;
+ }
+  
+}
+ $(function() {
+ $( ".datepicker" ).datepicker({
+ beforeShowDay: enableThursday,dateFormat: "dd/mm/yy"
+ });
+ });
+  </script>
+  
+
+ @checkSelected(id:String,eid:Long) = @{
+    
+    var result = eid.toString();
+    
+     
+       if(result==id){
+       	
+       	result = "selected";
+       	}
+    
+    result
+}
+ @currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+	
+	
+  curTimeFormat.format(currDate)
+  
+}
+
+@isStatusValid(typeObj:String) = @{
+
+	var result = "";
+	if(typeObj.equals("DR")){
+	
+		if(dsrObject.status.equals("SUBMITTED")){
+			result = "disabled" ;
+		}
+		
+	
+	}else if(typeObj.equals("DSR")){
+		
+		if(dsrObject.dsr.status.equals("SUBMITTED")){
+			result = "disabled" ;
+		}
+	
+	}
+	
+	result
+}
+
+@import java.math.BigInteger; var i=0;var j=0;
+
+
+@import java.lang.String; var display = "";
+
+
+@main{
+
+	<div class="wrapper" style="height:90%">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+            					<a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")" class="btn btn-default">DAILY RECONCILIATION</a>
+            					<a href="#" class="btn btn-default">@flash.get("pageAction")</a>
+            				}
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           				 	@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+           						<a href="@routes.Application.showOptions("DAILY RECONCILIATION",flash.get("pageAction"))" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					@if((session.get("role")).contains("admin") || (session.get("role")).contains("su") 
+           					|| (session.get("role")).contains("ac") || (session.get("role")).contains("sa") || (session.get("role")).contains("HeadOffice Accountant") ){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}	
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+     
+@helper.form(action = routes.DailyReconciliations.update(id),'enctype -> "multipart/form-data",'id -> "drEditForm", 'onsubmit -> "return verifyPayoutReqmnts();") {
+	
+	<style>
+		table {
+		height: 5px;
+	    border: 1px solid black;
+    	}
+	</style>
+	
+	<h3>@store.name</h3>
+		
+		<hr/>
+		<br/>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+            <thead>
+               <tr style="background-color:#58ACFA">
+                   
+                 	 <th>Created Date</th>
+                     <th>Reporting Business Date</th>
+                     <th>Last Reporting Date</th>
+                         
+                      <th>Total Sales Reported</th>
+                      <th>Cash in Safe</th>
+                      <th>Cheques in Safe</th>
+                      <th>Variance</th>
+                      <th>Status</th>
+                      <th>Sales Analysis Report </th>
+                      
+               </tr>
+            </thead>
+            <tbody>
+
+               
+                    <tr>
+                        <td>@currentDateFormat(dsrObject.createDate)</td>
+                        
+                        <td>@currentDateFormat(dsrObject.reportingBusinessDate) </td>
+                        
+                        <td>@DailySalesReconciliation.getLastReportingBusinessDate(store.id) </td>
+                         
+                        <td> @DailySalesReconciliation.getTotalSalesAmount(dsrObject.dsr)  </td>
+                        
+                        <td> @dsrObject.close_cash</td> 	
+                        <td>  @dsrObject.close_cheque  </td> 	
+                        <td> @DailySalesReconciliation.getVarianceAmount(dsrObject.dsr) </td> 	
+                       	<td>
+						@select(
+		  				 dsrForm("status"),
+		  				 options(Seq("OPEN","SUBMITTED")),'id -> "drStatusId",
+		 				  '_default -> "-- Select Status --"
+						)</td>
+						<td>
+            				<div class="clearfix" id="dailyReportFile_field" style="display:none;">
+								<label for="dailyReportFile">Select File</label>
+									<div class="input">
+										<input type="file" id="@{id}_dailyReportFile" name="@{id}_dailyReportFile" value="@dsrObject.dailyReportFile" accept="application/pdf" />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+							@if(dsrObject.dailyReportFile!=null){
+			                  <a href="/INVOICEPROCESSINGSYSTEM/@dsrObject.dailyReportFile" class="fancyboxPDF btn btn-primary" title="Daily Sales Analysis Report" onclick="OpenFancyBoxForJustView('@dsrObject.id');">Preview Report</a>
+			                }
+			                
+					  	</td>
+                          
+                    </tr>
+              
+
+            </tbody>
+           
+        </table>
+       </div>
+		<br>
+		
+              		<ul class="tabs">
+  						<li class="active" rel="tab1">Sales Reconciliation</li>
+  						<li rel="tab2">Safe Payouts</li>
+  						<li rel="tab3">Bank Deposit</li>
+  						<li rel="tab4">Pay Wages</li>
+					</ul>
+					<div class="tab_container">
+  						<h3 class="d_active tab_drawer_heading" rel="tab1">Sales Reconciliation</h3>
+  						<div id="tab1" class="tab_content">
+						 		<div class="table-responsive">
+        						<table class="table table-bordered">
+            						<tr style="background-color:#D0F5A9">
+					                 	 <th>Created Date</th>
+					                     <th>Reporting Business Date</th>
+					                   	 <th>Total Sales Reported</th>
+					                      <th>Total Media Collected</th>
+					                      <th>Register Payouts</th>
+					                      <th>Other Payouts</th>
+					                      <th>CashOuts</th>
+					                      <th>Variance</th>
+					                      <th>Status</th>
+                					</tr> 		
+            						<tbody>
+						            	@if((isStatusValid("DR").equals("disabled"))){
+											
+											
+											@{display="disabled"}
+											}
+											@if(!(isStatusValid("DR").equals("disabled")) && !(isStatusValid("DSR").equals("disabled"))){
+												@{display="disabled"}
+											}
+						               
+						                    <tr>
+						                        <td><a href="@routes.DailySalesReconciliations.edit(dsrObject.dsr.id,flash.get("pageAction"))">@currentDateFormat(dsrObject.createDate)</a></td>
+						                        
+						                        <td>@currentDateFormat(dsrObject.reportingBusinessDate) </td>
+						                     
+						                        <td> @DailySalesReconciliation.getTotalSalesAmount(dsrObject.dsr) </td>
+						                        
+						                          <td> @DailySalesReconciliation.getTotalMediaCollected(dsrObject.dsr) </td>
+						                        
+						                          <td> @DailySalesReconciliation.getTotalPayouts(dsrObject.dsr) </td>
+						                        
+						                          <td> @DailySalesReconciliation.getOtherPayouts(dsrObject.dsr)</td>
+                          
+                          						  <td> @DailySalesReconciliation.getTotalCashOuts(dsrObject.dsr)</td>
+						                       
+						                        <td> @DailySalesReconciliation.getVarianceAmount(dsrObject.dsr)</td> 	
+						                        	
+						                       	
+						                       	<td>
+						                       	@dsrObject.dsr.status
+												</td>
+						                          
+						                    </tr>
+            						</tbody>
+        						</table>
+      							</div>
+  						</div>
+  						<!-- #tab1 -->
+  						<h3 class="tab_drawer_heading" rel="tab2">Safe Payouts</h3>
+  						<div id="tab2" class="tab_content">
+ 							@if(!isStatusValid("DR").equals("disabled")){
+    		
+								<p><label>Search Suppliers</label>
+											<input class="text_field dropdown-toggle" id="paysupplierid" name="searchSuppliers" 
+												placeholder="Search here for Suppliers" type="text" value="" 
+												style="width:203px" onKeyUp="getPayoutSuppliers('SAFEPAYOUT');"/></p>
+										
+									<p><label>Similar Supplier Names </label>
+					                   <select class="text_field" id="suppliersid" name="similarSuppliers" size="5" style="width:510px;" onchange="addSuppDetails('SAFEPAYOUT',@dsrObject.id)" multiple></select>
+					        	</p>
+			    			}
+		  				<div class="table-responsive">
+					    <table  id="payTabForm" class="table table-bordered">
+					    	 <thead>
+			               
+			                	<th style="background-color:#D0F5A9">Supplier Name</th>
+			                	<th style="background-color:#D0F5A9">Supplier ABN</th>
+			                	<th style="background-color:#D0F5A9">Total Invoice Amount</th>
+			                	<th style="background-color:#D0F5A9">Expense Type</th>
+			                	<th style="background-color:#D0F5A9">File Location</th>
+			                	<th style="background-color:#D0F5A9">Reason</th>
+			                	<th style="background-color:#D0F5A9"></th>
+			                
+			            	</thead>
+			            	<tbody>
+							 @for(payout <- Payout.getPayoutList(dsrObject.payouts,"SAFEPAYOUT")) {
+			                    <tr>
+			                    	<td>@payout.supplier.name</td>
+			                    	<td>@payout.supplier.description</td>
+			                        <td>
+			                        <input type="text" id=@{payout.id}_Amt name=@{payout.id}_Amt  class="drRegPayout" value="@Payout.getPayoutAmount(payout,"SAFEPAYOUT" )">
+			                                      
+			                        </td>
+			                        <td>
+			                        
+			                        <select name="@{payout.id}_Exp" id="@{payout.id}_Exp"> 
+			                        
+			                      
+									  @for(expenseHead <- store.expenseHeads) {
+						                    
+						                         <option value="@expenseHead.id"  name="@payout.category" @checkSelected(payout.category,expenseHead.id)>@expenseHead.name </option>
+						                                            
+						                  } 
+			                 		 </select> 
+			                        </td>
+			                        <td>
+			                      
+			                        <input type="file" name="@{payout.id}_File" id="@{payout.id}_File" value="@payout.invoice" >
+			                        @if(payout.invoice!=null){
+			                        <a href="javascript:window.open('/INVOICEPROCESSINGSYSTEM/@(payout.invoice)','_blank','toolbar=yes')" class="btn btn-primary" >Preview Invoice</a>
+			                       	}
+			                         
+			                        </td>
+			                        
+			                        <td>
+				                        <textarea id=@{payout.id}_reason name=@{payout.id}_reason cols="30" rows="4">@payout.reason</textarea>
+				                    </td>
+			                         
+			                          <td><INPUT TYPE="Button" CLASS="btn btn-primary" onClick="delRow(@payout.id)" VALUE="Delete Row" @isStatusValid("DR")></td>                  
+			                             
+			                   </tr>
+			               }
+			               
+			            </tbody>
+            		</table>
+            		</div>
+  				</div>
+  						<!-- #tab2 -->
+  						<h3 class="tab_drawer_heading" rel="tab3">Bank Deposit</h3>
+  						<div id="tab3" class="tab_content">
+     						<div class="table-responsive">
+     						<table class="table table-bordered">
+					            <thead>
+			 				  	 <th style="background-color:#D0F5A9">Banking Details</th>
+			                     <th style="background-color:#D0F5A9"></th>
+			                     <th style="background-color:#D0F5A9"></th>
+			                     <th style="background-color:#D0F5A9"></th>
+			                     </thead> 
+					            <tbody>
+						                <tr>
+			                    	 <td> CASH Amount Deposited</td>
+			                         <td> <input type="text"  name="cashAmt" class="bankCashAmt" value="@dsrObject.bankDeposit.cashAmt" ></td>
+			                         <td> CHEQUE(S) Amount Deposited</td>
+			                          <td> <input type="text"  name="chequeAmt" class="bankChequeAmt" value="@dsrObject.bankDeposit.chequeAmt" ></td> 
+			                                       
+			                      
+			              		 </tr>
+					
+					            </tbody>
+		        			</table>
+     						</div>
+  						</div>
+  						<!-- #tab3 -->
+  						<h3 class="tab_drawer_heading" rel="tab4">Pay Wages</h3>
+  						<div id="tab4" class="tab_content">
+	     					<div class="table-responsive">
+	     					<table id="payWageSelectForm" class="table table-bordered">
+								<thead>
+					               
+					                <th style="background-color:#D0F5A9">Select Employee</th>
+					                <th style="background-color:#D0F5A9">Week Start Date</th>
+					                <th style="background-color:#D0F5A9"></th>
+					                <th style="background-color:#D0F5A9"></th>
+					    		</thead>
+    			 
+    			 				<tbody>
+					    			 <tr>
+					    			 	<td> 
+					    		 		
+					    		 		<select id="empId">
+					    			 		 @for(employee <- Employee.getEmployeesbyStore(store.id)) {
+					    			 		 
+					    			 		 	<option value="@employee.id">@employee.firstName @employee.lastName</option>
+					    			 		 }
+					    			 	
+					    			 	</select>
+					    			 	</td>
+					    			 	<td> <input type="text" name="startdate" class="datepicker"  readonly='readonly'/> 
+					    			 	<input type="button" value="Add" class="btn btn-primary"  onclick="addPayroll(@id)" @isStatusValid("DR") />	</td>
+					    			 	<td></td>
+					    			 	<td></td>
+					    			 </tr>
+					    			 
+					    		</tbody>
+			
+						</table>
+			            </div>	       
+		  				<div class="table-responsive">
+					    <table  id="payWageForm" class="table table-bordered">
+					    	 <thead>
+			               
+			                	<th style="background-color:#D0F5A9">Employee Name</th>
+			                	<th style="background-color:#D0F5A9">Start Date</th>
+			                	<th style="background-color:#D0F5A9">End Date</th>
+			                	<th style="background-color:#D0F5A9">Salary/hr</th>
+			                	<th style="background-color:#D0F5A9">Total Timesheet Hours</th>
+			                	<th style="background-color:#D0F5A9">Total Amount</th>
+			                	<th style="background-color:#D0F5A9"> Previously Paid Amount</th>
+			                	<th style="background-color:#D0F5A9">Current Paid Amount</th>
+			                	<th style="background-color:#D0F5A9">	</th>
+			                	<th style="background-color:#D0F5A9">	</th>
+			                
+			            	</thead>
+            				<tbody>
+				
+								@for(payroll <- dsrObject.payroll) {
+				    			 		 
+				    			 		 	<tr>
+				    			 		 	<td>@(Employee.find.byId(payroll.empid))</td>
+				    			 		 	<td> @currentDateFormat(payroll.from_date)</td>
+				    			 		 	<td>@currentDateFormat(payroll.to_date)</td>
+				    			 		 	@if( Employee.find.byId(payroll.empid) != null ){
+				    			 		 	
+				    			 		 		<td>@Employee.find.byId(payroll.empid).sal</td>
+				    			 		 		<td>@Timesheet.getTotalTimesheetHours(payroll.empid,Application.getDate(payroll.from_date) )</td>
+				    			 		 		<td>@Timesheet.getTotalTimesheetAmount(payroll.empid,payroll.from_date)</td>
+				    			 		 		<td>@Payroll.getAmountPaidbyWeek(payroll.empid,payroll.from_date,id)</td>
+																    			 		 	
+				    			 		 	}else{
+				    			 		 	
+				    			 		 		<td> - </td>
+				    			 		 		<td> - </td>
+				    			 		 		<td> - </td>
+				    			 		 		<td> - </td>
+				    			 		 	}
+				    			 		 	
+				    			 		 	<td><input type="text" class="payAmt" name="payAmt_@payroll.id" id="payAmt_@payroll.id" value="@payroll.payAmt"></td>
+				    			 		 	<td><INPUT TYPE="Button" CLASS="btn btn-success" onClick="viewTimesheet('@payroll.empid','@currentDateFormat(payroll.from_date)')" VALUE="View Summary"></td>
+				    			 		 	<td><INPUT TYPE="Button" CLASS="btn btn-primary" onClick="delPayrollRow('@payroll.id')" VALUE="Delete" @isStatusValid("DR")></td>
+				    			 		 	</tr>
+				    			 		 }
+               
+            					</tbody>
+            				</table>
+	     					</div>
+  						</div>
+  						<!-- #tab4 -->
+  						
+					</div>
+					<!-- .tab_container -->
+      			
+      		
+      	
+      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+        		
+            	<p style="text-align: right;">  
+				
+					@if((flash.get("pageAction")).equals("MODIFY")){
+						
+						
+							<input type="submit" id="drButton" class="btn btn-large btn-success" @display style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;
+						
+					}
+				</p>
+		    </div>
+        </div>
+        
+        
+        <!-- div for expense id in javascript,display none -->
+        
+        	<div id="expense" style="display:none">
+		    	@select(
+	                dsrForm("expId"), 
+	                options(ExpenseHead.options), 
+	                 '_default -> "-- Choose a ExpenseHead --",
+	                '_showConstraints -> false
+            	)
+		    </div>
+    
+   
+  
+}<!-- form end -->
+
+	</div>
+	</div>
+
+}<!-- main end -->

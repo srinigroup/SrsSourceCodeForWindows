@@ -1,0 +1,258 @@
+@(weekStartDate : java.util.Date, sid:Long)
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+  curTimeFormat.format(currDate)
+}
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/timesheet.css")"> -->
+@main {
+
+  <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+       						@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+       							<a href="" onclick="goBack()" class="btn btn-default">TIMESHEET</a>
+       						}
+       						@if((session.get("role")).contains("admin") || (session.get("role")).contains("su") 
+       						|| (session.get("role")).contains("ac") || (session.get("role")).contains("su")){
+           						<a href="@routes.Timesheets.showSelectPage()" class="btn btn-default">TIMESHEET</a>
+           					}
+            				<a href="#" class="btn btn-default">LIST</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           				 	@if((session.get("role")).contains("sm") || (session.get("role")).contains("sk")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					@if((session.get("role")).contains("admin") || (session.get("role")).contains("su")
+           					 || (session.get("role")).contains("ac") || (session.get("role")).contains("sa") || (session.get("role")).contains("HOE") || (session.get("role")).contains("HeadOffice Accountant")){
+           						<a href="" onclick="goBack()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+           					}
+           					
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+  
+
+    @if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+   
+        <div class="table-responsive" style="width: 100%;margin-bottom: 15px;overflow-x:auto;">
+        	<table class="table table-bordered" style="background-color: beige;">
+        		<thead style="background-color: gainsboro;">
+                <tr>
+                    <th style="text-align:center;" >DAY</th>
+                    @for(i <- 0 to 6) {
+                    	<th colspan="3" style="text-align:center;" >@Application.getDayFromDate(Application.getNextDate(weekStartDate,i))</th>
+                    }
+                    <th style="text-align:center;" >TOTAL</th>    
+                </tr>
+                <tr>
+                	<td style="text-align:center;" ><b>DATE</b></td>
+                	@for(i <- 0 to 6) {
+                    	<td colspan="3" style="text-align:center;" >@currentDateFormat(Application.getNextDate(weekStartDate,i))</td>
+                    }
+                    <td style="text-align:center;" >HRS</td>
+                </tr>
+                <tr>
+                	<td class ="timesheetTableTD" style="text-align:center;padding : 2px;" ><b>NAME</b></td>
+                	@for(i <- 0 to 6) {
+                    	<td class ="timesheetTableTD" style="padding:2px;">START</td>
+                    	<td class ="timesheetTableTD" style="padding:2px;">END</td>
+                    	<td class ="timesheetTableTD" style="padding:2px;">HRS</td>
+                    }
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+
+                @for(employee <- Timesheet.getEmployeesInfoByTimesheet(sid,weekStartDate).sortWith(_.firstName < _.firstName)) {
+                    
+                    <tr>
+                    	<td style="text-align:center;" > <b> @employee.firstName @employee.lastName </b> </td>
+                    	
+                    	<! -- Thursday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,0))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    				
+                    			</tr>
+                    			</table>			
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                    	<! -- Friday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,1))){
+                    			<table class="table table-bordered">
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    			
+                    			</tr>
+                    			</table>		
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                    	<! -- Saturday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,2))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td class="danger" style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td class="danger" style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td class="danger" style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    			
+                    			</tr>
+                    			</table>		
+                    		}
+                    		
+                    	</td>
+                    	
+                    	<! -- Sunday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,3))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    				}else{
+                    					<td class="danger" style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td class="danger" style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td class="danger" style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    			</tr>
+                    			</table>			
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                    	<! -- Monday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,4))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    			</tr>
+                    			</table>			
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                    	<! -- Tuesday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,5))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2px;">@timesheet.duration</td>
+                    				}
+                    			
+                    			</tr>
+                    			</table>	
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                    	<! -- Wednesday -->
+                    	<td colspan="3">
+                    		
+                    		@for(timesheet <- Timesheet.getTimesheetByEmployeeAndDate(sid,employee.id,Application.getNextDate(weekStartDate,6))){
+                    			<table class="table table-bordered">	
+                    			<tr>
+                    				@if(timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") ){
+                    					<center><b><span style="color:green">@timesheet.leaveType</span></b></center>
+                    					
+                    				}else{
+                    					
+                    					<td style="padding:2.5px;">@timesheet.startTimeHour:@timesheet.startTimeMins</td>
+                    					<td style="padding:2.5px;">@timesheet.endTimeHour:@timesheet.endTimeMins</td>
+                    					<td style="padding:2.5px;">@timesheet.duration</td>
+                    				}
+                    			</tr>
+                    			</table>			
+                    		}
+                    		
+                    	</td>
+                    	
+                    	
+                  	<!-- Total Hours -->
+	                    <td>@Timesheet.getTotalTimesheetHours(employee.id,Application.getDate(weekStartDate))</td>
+                    </tr>
+                }
+
+            </tbody>
+         </table>
+       </div>
+     </div>
+    </div>
+   				
+}
+
+            

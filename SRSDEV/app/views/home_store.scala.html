@@ -1,0 +1,185 @@
+ @checkPermission(user:String) = @{
+    
+   var role =  user 
+    if(role == null) {
+       	role = "null";
+    }
+     role
+}
+
+ 
+ @main{   
+
+        <div class="wrapper">
+            <div class="container">
+                <div class="row"> <!-- apply later style="margin-top: 2.5%;" -->
+					<div class="span12">
+					
+					<div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                
+                                	 @if(checkPermission(session.get("role")).contains("sk")){
+                                	 <div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>SHIFT</b></div>
+                                				<div class="panel-body">
+			                                		<a href="@routes.Application.showOptions("SHIFT","ALL")"><img src="@routes.Assets.at("images/tabImages/shift.jpg")" class="img-responsive center-block" alt="Image" style="width:25%;">
+				                                        <p class="text-muted" style="margin-top:7px;">
+				                                            Profit</p>
+				                                     </a>
+	                                     		</div>
+										      </div> 
+										   </div>
+										   <div class="col-sm-4 col-md-4">
+									      	<div class="panel panel-success">
+									        	<div class="panel-heading"><b>Employee TimeSheet</b></div>
+                                					<div class="panel-body">
+										 
+				                                     <a href="@routes.Application.showOptions("EMP TIMESHEET","ALL")"><img src="@routes.Assets.at("images/tabImages/timesheet.png")" class="img-responsive center-block"  alt="Image" style="width:20%;">
+				                           				<p class="text-muted">Store Keeper</p>
+				                                    </a>
+				                                    </div>
+										      </div> 
+										   </div>
+	                                     <div class="col-sm-4  col-md-4">
+									      <div class="panel panel-success">
+									        <div class="panel-heading"><b>SUPPLIER</b></div>
+                                				<div class="panel-body">
+				                                    <a href="@routes.Shifts.storeSuppliersList()"><img src="@routes.Assets.at("images/tabImages/supplier.jpg")" class="img-responsive center-block" alt="Image" style="width:25%;">
+				                                        <p class="text-muted">
+				                                            Supplier's Info</p>
+				                                    </a>
+	                                     		</div>
+										   </div> 
+										  </div>
+	                                    
+                                    }
+                                </div>
+                            </div>
+                        </div> <!-- content -->
+					
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                
+	                                 @if(checkPermission(session.get("role")).contains("sm")){
+	                                	 <div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>TIMESHEET</b></div>
+                                				<div class="panel-body">
+				                                	<a href="@routes.Application.showOptions("TIMESHEET","ALL")"><img src="@routes.Assets.at("images/tabImages/timesheet.png")" class="img-responsive center-block" alt="Image"  style="width:20%;">
+					                                        <p class="text-muted">
+					                                           Store Manager</p>
+					                                  </a>
+					                              </div>
+										   		</div> 
+										  	</div>
+										  	<div class="col-sm-4 col-md-4">
+									      		<div class="panel panel-success" >
+									        		<div class="panel-heading"><b>SALES RECONCILIATION</b></div>
+                                						<div class="panel-body">   
+		                                  
+							                                 <a href="@routes.Application.showOptions("SALES RECONCILIATION","ALL")"><img src="@routes.Assets.at("images/tabImages/saleesreconcilation.jpg")" class="img-responsive center-block" alt="Image"  style="width:20%;">
+							                                        <p class="text-muted">
+							                                            Verfiy Sales</p>
+							                                  </a>
+							                               </div>
+										   				</div> 
+										  			</div>
+		                                  <div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>DAILY RECONCILIATION</b></div>
+                                				<div class="panel-body">
+					                                 <a href="@routes.Application.showOptions("DAILY RECONCILIATION","ALL")"><img src="@routes.Assets.at("images/tabImages/reoncilation1.jpg")" class="img-responsive center-block" alt="Image"  style="width:20%;">
+					                                        <p class="text-muted">
+					                                          Banking,Pay Wages,Safe Payouts</p>
+					                                  </a>
+				                                 </div>
+											</div> 
+										</div>  
+	                                 }
+                                 
+                                </div>
+                            </div>
+                        </div> <!-- content -->
+                        
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	<div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>INVOICE INVENTORY</b></div>
+                                				<div class="panel-body">
+				                                    <a href="@routes.InvoiceInventory.showUploadPage()"><img src="@routes.Assets.at("images/tabImages/uploadinvoice.jpg")" class="img-responsive center-block" alt="Image"  style="width:22%;">
+				                                        <p class="text-muted">
+				                                           Invoice Upload System</p>
+				                                    </a>
+				                                    </div>
+												</div> 
+									</div>  
+									<div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>REPORTS</b></div>
+                                				<div class="panel-body">
+				                                    <a href="@routes.Reports.getReportHomeForStore()"><img src="@routes.Assets.at("images/tabImages/reports.jpg")" class="img-responsive center-block" alt="Image" align="middle" style="width:20%;">
+			                                        <p class="text-muted">
+			                                            Reports Generation</p>
+			                                    	</a>
+			                                      </div>
+												</div> 
+									</div>  
+									<div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>MONTHLY REPORTS</b></div>
+                                				<div class="panel-body">
+			                                    	<a href="@routes.MonthlyReports.showUploadPage()"><img src="@routes.Assets.at("images/tabImages/upload.jpg")" class="img-responsive center-block" alt="Image" align="middle" style="width:15%;">
+			                                        <p class="text-muted" style="margin-top: 10px;">
+			                                            Upload Monthly Reports</p>
+			                                    	</a>
+                                     			</div>
+											</div> 
+									</div>  
+                                </div>
+                            </div>
+                          </div>   
+                        <div class="content">
+                            <div class="btn-controls">
+                                <div class="btn-box-row row-fluid">
+                                	<div class="col-sm-4 col-md-4">
+									      <div class="panel panel-success" >
+									        <div class="panel-heading"><b>VIEW HO FORMS</b></div>
+                                				<div class="panel-body">
+				                       				<a href="@routes.HoForms.getAllHeadOfficeForms()"><img src="@routes.Assets.at("images/tabImages/mreports1.png")" class="img-responsive center-block" alt="Image" align="middle" style="width:15%;">
+				                                        <p class="text-muted" style="margin-top: 10px;">
+				                                            Head Office Forms</p>
+				                                    </a> 
+				                                   </div>
+											</div> 
+									</div>  
+									
+                                </div>
+                            </div>
+                        </div>  
+                                               
+				       
+       			
+       				</div> <!-- span 12 -->
+        		</div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+     	 <div class="wrapper">
+            <div class="container">
+                <div class="row">
+			     	 <div class="footer">
+							          <hr/>   
+							            <div class="container">
+							               <p  class="pull-right"> <b class="copyright">&copy; 2014 SRINI Group &nbsp;</b>All rights reserved.</p>
+							            </div>
+					 </div> <!-- footer -->
+					 </div> <!-- row -->
+      		</div> <!-- container -->
+     	</div> <!-- wrapper -->
+			        
+      
+}

@@ -1,0 +1,242 @@
+@(currentPage: com.avaje.ebean.Page[Employee], currentSortBy: String, currentOrder: String, currentFilter: String, pageAction: String)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.Employees.list(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@link1(newPage:Int, newSortBy:String) = @{
+    
+    var sortBy = currentSortBy
+    var order = currentOrder
+    
+    if(newSortBy != null) {
+        sortBy = newSortBy
+        if(currentSortBy == newSortBy) {
+            if(currentOrder == "asc") {
+                order = "desc"
+            } else {
+                order = "asc"
+            }
+        } else {
+            order = "asc"
+        }
+    }
+    
+    // Generate the link
+    routes.Employees.listForFilterByStore(newPage, sortBy, order, currentFilter, pageAction)
+    
+}
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String) = {
+    <th class="@key.replace(".","_") header @if(currentSortBy == key) @{if(currentOrder == "asc") "headerSortDown" else "headerSortUp"}">
+        <a href="@link(0, key)">@title</a>
+    </th>
+}
+
+@main {
+    
+   
+   <div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("STAFF","ALL")" class="btn btn-default">STAFF</a>
+            				<a href="#" class="btn btn-default">@pageAction</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("STAFF","ALL")" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+   
+   
+
+    @if(flash.containsKey("success")) {
+         <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+    <div id="actions">
+        
+        <form action="@link(0, "name")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by Employee name...">
+            <input type="hidden"  name="pg" value="@pageAction"/>
+            <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-info">
+            </p>
+            
+        </form>
+        
+    </div>
+     <div id="actions1">
+        
+        <form action="@link1(1, "name")" method="GET">
+        	<p class="pull-left" style="padding-top:-10px">
+            <select name="sn" value="">
+            <option>Choose Store</option>
+            @for(s <- Store.all()){
+            <option value="@s.id">@s.name</option>
+            }
+            </select>
+            <input type="hidden"  name="pg" value="@pageAction"/>
+            <input type="submit" id="searchsubmit" value="Get Employees" class="btn btn-info">
+            </p>
+            
+        </form>
+        
+    </div>
+    
+    @if(currentPage.getTotalRowCount == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+    } else {
+        
+        <div class="table-responsive"> 
+        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+            	<thead style="background-color: gainsboro;">
+                	<tr>
+                     	@header("firstName", "First Name")
+                  
+                     	@header("lastName", "Last Name")
+                    
+                     	<th>Store</th>
+                    
+                    
+                      	@header("gender", "Gender")
+                      
+                      	<th>Phone1</th>
+                      
+                       	<th>Email</th>
+                      
+                       	@header("address", " Address")
+                	</tr>
+            	</thead>
+            	<tbody>
+
+	                @for(employee <- currentPage.getList) {
+	                    <tr>
+	                        <td><a href="@routes.Employees.edit(employee.id,flash.get("pageAction"))">@employee.firstName</a></td>
+	                        
+	                                              
+	                         <td>
+	                            @if(employee.lastName == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.lastName
+	                            }
+	                        </td>
+	                        
+	                         <td>
+	                            @if(employee.store == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.store.name
+	                            }
+	                        </td>
+	                                                
+	                         <td>
+	                            @if(employee.gender == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.gender
+	                            }
+	                        </td>
+	                        
+	                      	<td>
+	                            @if(employee.contactInfo.phone1 == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.contactInfo.phone1 
+	                            }
+	                        </td>
+	                      
+	                         <td>
+	                            @if(employee.contactInfo.email  == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.contactInfo.email 
+	                            }
+	                        </td>
+	                          <td>
+	                            @if(employee.address.street == null) {
+	                                <em>-</em>
+	                            } else {
+	                                @employee.address.number @employee.address.street, @employee.address.city @employee.address.country @employee.address.postalCode
+	                            }
+	                        </td>
+	                    </tr>
+	                }
+
+            	</tbody>
+        	</table>
+        </div>
+
+        <div id="pagination" class="pager">
+            <ul>
+                @if(currentPage.hasPrev) {
+                    <li class="previous">
+                        <a href="@link(currentPage.getPageIndex - 1, null)">&larr; Previous</a>
+                    </li>
+                } else {
+                    <li class="previous disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @currentPage.getDisplayXtoYofZ(" to "," of ")</a>
+                </li>
+                @if(currentPage.hasNext) {
+                    <li class="next">
+                        <a href="@link(currentPage.getPageIndex + 1, null)">Next &rarr;</a>
+                    </li>
+                } else {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+    }
+    
+     </div>
+    </div>
+}
+
+            

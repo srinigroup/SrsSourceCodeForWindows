@@ -1,0 +1,93 @@
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">UPLOAD</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.InvoiceInventory.uploadInvoicesByHeadOffice(),'enctype -> "multipart/form-data") {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+  						<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="storeId">Select Store</label>
+									<div class="input">
+										<select name="storeId" id="invoiceStoreList" required>
+						            		<option class="blank" value="">-- Choose a Store --</option>
+						  					@for(store <- Stores.getStoresList()){
+						  						<option value="@store.id">@store.name</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            			<td>
+            				<div class="clearfix" id="invoiceType_field">
+								<label for="invoiceType">InvoiceType</label>
+									<div class="input">
+										<select name="invoiceType" required>
+						            		<option class="blank" value="">-- Choose a Invoice Type --</option>
+						  					<option value="CashPaid">CashPaid</option>
+						  					<option value="Others">Others</option>
+						  					<option value="Statements">Statements</option>
+						  					<option value="Fuel">Fuel</option>
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+            				<div class="clearfix" id="invoiceFiles_field">
+								<label for="invoiceFiles">Select Files</label>
+									<div class="input">
+										<input type="file" id="invoiceFiles" name="invoiceFiles" accept="application/pdf" multiple="multiple" onchange="updateList()" required />
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            		</tr>
+            	</table>
+         	</div>
+		
+		 
+        
+        <span id="displaySelected" style="display:none;"><b>Selected Invoices:</b></span>
+		<div id="fileList" style="background-color: white;border-color: #fff;"></div><br/>
+		
+        <center><input type="submit" value="Upload" class="btn btn-primary" onclick="return invoiceformValidation()"></center>
+        
+        
+	
+	} <!-- form ends -->
+	
+	<a href="@routes.InvoiceInventory.dateSelectPageForHeadOffice()" class="pull-right btn btn-success">Uploaded invoices</a>
+		</div>
+	</div>
+	
+} <!-- main ends -->

@@ -1,0 +1,172 @@
+@(invoiceList : List[Invoice], storeId:Long , invoiceType : String)
+@import helper._ 
+@import helper.twitterBootstrap._
+
+@checkSelected(id:Long)= @{
+	val result="selected"
+		if(storeId != null){
+			if(storeId == id){
+				result
+			}
+		}
+}
+
+@checkSelectedType(invoiceTYPE:String)= @{
+	val result="selected"
+		if(invoiceType != null){
+			if(invoiceTYPE.equals(invoiceType)){
+				result
+			}
+		}
+}
+
+@main{
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="#" class="btn btn-default">INVOICE PROCESS</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.index()" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+         		 
+         	@if(flash.containsKey("success")) {
+		        <div class="alert alert-warning">
+		            <strong>Done!</strong> @flash.get("success")
+		        </div>
+		    } 
+	
+	@helper.form(action = routes.InvoiceInventory.getInvoices()) {
+	
+			<div class="table-responsive">
+  				<table style="background-color: white;border-color: #fff;" class="table table-bordered">
+  					<tr>
+					  	<td>
+            				<div class="clearfix" id="storeId_field">
+								<label for="storeId">Select Store</label>
+									<div class="input">
+										<select name="storeId" id="invoiceStoreList" required>
+						            		<option class="blank" value="">-- Choose a Store --</option>
+						  					@for(store <- Stores.getStoresList()){
+						  						<option value="@store.id" @checkSelected(store.id)>@store.name</option>
+						  					}
+						  				</select>
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+					  	<td>
+            				<div class="clearfix" id="invoiceType_field">
+								<label for="invoiceType">InvoiceType</label>
+									<div class="input">
+										<select name="invoiceType" required>
+						            		<option class="blank" value="">-- Choose a Invoice Type --</option>
+						  					<option value="CashPaid" @checkSelectedType("CashPaid")>CashPaid</option>
+						  					<option value="Others" @checkSelectedType("Others")>Others</option>
+						  					<option value="Statements" @checkSelectedType("Statements")>Statements</option>
+						  					<option value="Fuel" @checkSelectedType("Fuel")>Fuel</option>
+						  				</select> 
+									    <span class="help-inline"></span>
+									</div>
+							</div>
+					  	</td>
+            		</tr>
+            	</table>
+         	</div>
+		
+        <center><input type="submit" value="Get Invoices" class="btn btn-primary"></center>
+        
+        
+	
+	} <!-- form ends -->
+		
+		<a href="#" data-toggle="popover" title="Total Invoices : @Invoice.pendingInvoicesByAllStores()" data-content="<ul>@for(store <- Stores.getStoresList()){<li>@store.name : @Invoice.pendingInvoicesByStore(store.id)</li>}</ul>" data-placement="bottom" data-trigger="hover" class="pull-right btn btn-danger">Pending Invoices</a>
+		
+		<br/>
+		<br/>
+		
+		
+		@if(invoiceList.size() == 0) {
+        
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        
+	    } else {
+	        <div class="table-responsive">
+	        	<table class="table table-hover  table-striped"  style="background-color: beige;">
+	        		<thead style="background-color: gainsboro;">
+	                <tr>
+	                    <th>File Name</th>
+	                    
+	                    <th>Uploaded Date</th>
+	                    
+	                    <th>InvoiceType</th>
+	                    
+	                    <th>Store</th>
+	                    
+	                </tr>
+	            </thead>
+	            <tbody>
+	
+	                @for(invoice <- invoiceList) {
+	                    <tr>
+	                    	@if(invoice.storeId != 1){
+	                    		<td><a href="/INVOICEPROCESSINGSYSTEM/@invoice.filePath" class="fancyboxPDF" title="@invoice.fileName" onclick="OpenFancyBox('@invoice.id');">@invoice.fileName</a></td>
+	                    	}
+	                    	@if(invoice.storeId == 1){
+	                    		<td><a href="/INVOICEPROCESSINGSYSTEM/@invoice.filePath" class="fancyboxPDF" title="@invoice.fileName" onclick="OpenFancyBoxForHeadOffice('@invoice.id');">@invoice.fileName</a></td>
+	                    	}
+	                        
+	                        <td>@invoice.uploadedDate</td>
+	                        <td>@invoice.invoiceType</td>
+	                        <td>@Store.find.byId(invoice.storeId)</td>
+	                    </tr>
+	                }
+	
+	            </tbody>
+	         </table>
+	       </div>
+	        
+	    }
+		
+		
+							<!-- supplier list for Invoice Inventory ,while Processing Invoice-->
+    							
+    							<div id="supplierListByStoreForInvoiceDiv" style="display:none">
+                       
+									<select id="supplierListByStoreForInvoice" name="supplierlistByStoreForInvoice" >
+										<option class="blank" value="">-- Choose a Supplier --</option>
+					  					@for(supplierMapping <- Store.find.byId(storeId).supplierMapping){
+						  						<option value="@supplierMapping.supplier.id">@supplierMapping.supplier.name</option>
+						  					}
+		                            </select> 
+                          		</div>  
+                          		
+                          	<!-- company list for Invoice Inventory ,while Processing Invoice-->
+    							
+    							<div id="companyListForInvoiceDiv" style="display:none">
+                       
+									<select id="companyListForInvoice" name="companyListForInvoice" >
+										<option class="blank" value="">-- Choose a Company --</option>
+					  					@for(company <- Company.find.where().eq("status", "ACTIVE").orderBy("name").findList() ){
+						  						<option value="@company.id">@company.name</option>
+						  					}
+		                            </select> 
+                          		</div>
+		
+		</div>
+	</div>
+	
+} <!-- main ends -->

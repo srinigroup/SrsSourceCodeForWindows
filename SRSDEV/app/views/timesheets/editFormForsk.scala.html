@@ -1,0 +1,267 @@
+@(timesheetForm: Form[Timesheet],timesheet:Timesheet,store:Store,emp:Employee)
+
+@import helper._
+ @import helper.twitterBootstrap._
+
+@checkSelectedLeave(leaveType:String)= @{
+                   val result="selected"
+                   if((timesheet.leaveType != null) && (timesheet.leaveType.equals(leaveType))){
+                      result
+                   }
+                   
+}
+
+@checkBoxForLeave()= @{
+                   val result="checked"
+                   if( (timesheet.leaveType != null) && (timesheet.leaveType.equals("AL") || timesheet.leaveType.equals("SL") || timesheet.leaveType.equals("PH") )){
+                      result
+                   }
+                   
+}
+
+@checkSelected(jobTitle:String,id:String)= @{
+                   val result="selected"
+                   if(jobTitle==id){
+                      result
+                   }
+                   
+}
+
+@checkSelectedDuration(jobTitle:String,id:Int) = @{  <!-- in DB values are stored as String, that's y convert into int for integer comparison -->
+
+		val result="selected"
+			if(jobTitle != null){   <!-- check for Null ,for the Timesheets which are Created when shift add -->
+				if(jobTitle.toInt==id){
+					result
+				}
+			}
+			
+}
+
+@currentDateFormat(currDate:Date) = @{
+  import java.util.Calendar
+  import java.text.SimpleDateFormat
+
+ 
+  val curTimeFormat = new SimpleDateFormat("dd/MM/yyyy")
+
+   if(currDate != null){
+  
+  	curTimeFormat.format(currDate)
+  }
+}
+@import java.lang.String; var display = "";
+
+@if((timesheet.status).equals("SUBMITTED") || (timesheet.status).equals("APPROVED") ){
+					
+					@{display="disabled"}
+}
+
+
+@main{
+ 
+	
+	<div class="wrapper">
+     	<div class="container" >
+			 <div class="row">
+            	<div class="span12">
+               		 <span>
+                    	<div id="bc1" class="btn-group btn-breadcrumb">
+       						<a href="@routes.Application.index()" class="btn btn-success"><i class="icon-home"></i></a>
+            				<a href="@routes.Application.showOptions("EMP TIMESHEET","ALL")" class="btn btn-default">EMP TIMESHEET</a>
+            				<a href="#" class="btn btn-default">@flash.get("pageAction")</a>
+      					</div>
+        			</span>
+            		<span class="pull-right" style="padding-right:50px;">
+           				 <div>
+           					<a href="@routes.Application.showOptions("EMP TIMESHEET",flash.get("pageAction"))" class="btn btn-default"><i class="icon-arrow-left"></i>BACK</a>
+          				 </div>
+        			</span>
+        		</div>
+        	</div>
+         		 <br><br>
+
+
+	@if(flash.containsKey("success")) {
+        <div class="alert alert-warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    } 
+
+ 
+	<form action ="@routes.Timesheets.updateForsk(timesheet.id,store.id)" method="POST" id="timesheetForm" onsubmit="return checkTimesheetExistsEditPage(@timesheet.id);"> 
+
+
+			<h2>Time Sheet Details</h2>
+			<hr/>
+			<br/>
+			<br/>
+		
+		
+        	
+          			<div class="table-responsive"> 
+        				<table class="table table-bordered" style="background-color: white;border-color: #fff;">
+        					<tr>
+								<td>
+									<div class="clearfix  " id="empName_field">
+									    <label for="empName">Employee</label>
+									    	<div class="input">
+									        
+									    		<input type="text" value="@emp.firstName.@emp.lastName"  readonly='readonly'/> 
+									
+									        <span class="help-inline"></span>
+									    </div>
+									</div>
+									<input type="hidden" name="empid" id="empid" value="@timesheet.empid" />
+								 </td>
+								
+								<td> 
+								
+									<div class="clearfix" id="date_field">
+    									<label for="date">Start Date</label>
+    									<div class="input">
+											<input type="text" name="date" class="startDatePicker" value="@currentDateFormat(timesheet.date)" required />
+										</div>
+									</div> 
+								</td>
+								
+								<td> 
+								
+									<div class="clearfix" id="date_field">
+    									<label for="date">End Date</label>
+    									<div class="input">
+											<input type="text" name="endDate" class="endDatePicker" value="@currentDateFormat(timesheet.endDate)" required />
+										</div>
+									</div> 
+								</td>
+								
+								<td>
+									 <input type="checkbox" name="applyLeave" id="applyLeaveCheckBox" @checkBoxForLeave() /> Leave
+									 
+									<div class="clearfix" id="leaveType_field" style="display:none;">
+    									<label for="leaveType">Leave Type</label>
+    										<div class="input">
+    											<select id="leaveType" name="leaveType">
+    												 <option class="blank" value="None">-- Choose Type --</option>
+										             <option value="AL" @checkSelectedLeave("AL")>AL</option>
+							                         <option value="SL" @checkSelectedLeave("SL")>SL</option>
+							                         <option value="PH" @checkSelectedLeave("PH")>PH</option>
+							                    </select> 
+    										</div>
+									</div>
+								
+								</td>
+								
+									<input type="hidden" name="firmid" value="@store.id"/>
+							</tr>	
+							<tr>
+								
+								<td>
+									<div class="clearfix  " id="timesheetStartTime_field">
+    									<label for="timesheetStartTime">Start Time</label>
+    										<div class="input">
+    											<select id="startTimeHour" name="startTimeHour" required onblur="durationFromStartEnd()">
+    												 <option class="blank" value="">-- Hour --</option>
+    												 @for(i <- 0 to 9) {
+    													<option value="0@i" @checkSelectedDuration(timesheet.startTimeHour,i)>0@i</option>
+													 }
+													  @for(i <- 10 to 23) {
+    													<option value="@i" @checkSelectedDuration(timesheet.startTimeHour,i)>@i</option>
+													 }
+										             
+							                    </select>
+							                    <select id="startTimeMins" name="startTimeMins" required onblur="durationFromStartEnd()">
+    												 <option class="blank" value="">-- Min's --</option>
+										             <option value="00" @checkSelected(timesheet.startTimeMins,"00")>00</option>
+							                         <option value="15" @checkSelected(timesheet.startTimeMins,"15")>15</option>
+							                         <option value="30" @checkSelected(timesheet.startTimeMins,"30")>30</option>
+							                         <option value="45" @checkSelected(timesheet.startTimeMins,"45")>45</option>
+							                    </select> 
+    										</div>
+									</div>
+								</td>
+								
+								
+								
+								<td>
+									<div class="clearfix  " id="timesheetEndTime_field">
+    									<label for="timesheetEndTime">End Time</label>
+    										<div class="input">
+    											<select id="endTimeHour" name="endTimeHour" required onblur="durationFromStartEnd()">
+    												 <option class="blank" value="">-- Hour --</option>
+    												  @for(i <- 0 to 9) {
+    													<option value="0@i" @checkSelectedDuration(timesheet.endTimeHour,i)>0@i</option> <!-- integer comparison -->
+													 }
+													  @for(i <- 10 to 23) {
+    													<option value="@i" @checkSelectedDuration(timesheet.endTimeHour,i)>@i</option>
+													 }
+										             
+							                    </select>
+							                    <select id="endTimeMins" name="endTimeMins" required onblur="durationFromStartEnd()">
+    												 <option class="blank" value="">-- Min's --</option>
+										             <option value="00" @checkSelected(timesheet.endTimeMins,"00")>00</option> <!-- String comparison -->
+							                         <option value="15" @checkSelected(timesheet.endTimeMins,"15")>15</option>
+							                         <option value="30" @checkSelected(timesheet.endTimeMins,"30")>30</option>
+							                         <option value="45" @checkSelected(timesheet.endTimeMins,"45")>45</option>
+							                    </select> 
+    										</div>
+									</div>
+								</td>
+								
+								<td>
+					 				@helper.inputText(timesheetForm("duration"), '_label -> "Duration", 'readonly -> "readonly")
+								</td>
+								
+								<td>
+									@if(timesheet.status.equals("APPROVED")){
+									
+									Status
+										<select id="statusForsk" name="status" disabled="disabled">
+													<option class="blank" value="">-- Select Status --</option>
+								  					<option value="OPEN" @checkSelected(timesheet.status,"OPEN")>OPEN</option>
+							                        <option value="SUBMITTED" @checkSelected(timesheet.status,"SUBMITTED")>SUBMITTED</option>
+							                        <option value="APPROVED"  @checkSelected(timesheet.status,"APPROVED")>APPROVED</option>
+							                        <option value="REJECTED"  @checkSelected(timesheet.status,"REJECTED")>REJECTED</option>
+					                            </select> 
+									
+									
+									}else{
+										Status
+										<select id="statusForsk" name="status">
+													<option class="blank" value="">-- Select Status --</option>
+								  					<option value="OPEN" @checkSelected(timesheet.status,"OPEN")>OPEN</option>
+							                        <option value="SUBMITTED" @checkSelected(timesheet.status,"SUBMITTED")>SUBMITTED</option>
+							                        <option value="APPROVED"  @checkSelected(timesheet.status,"APPROVED")>APPROVED</option>
+							                        <option value="REJECTED"  @checkSelected(timesheet.status,"REJECTED")>REJECTED</option>
+					                            </select> 
+									
+									}
+								</td>
+							</tr>
+						</table>
+					</div>
+            
+      	
+      	      	
+      	<!-- bottom div ,for submit and cancel button's -->
+        <div style="height:50px; margin-right:50px;  margin-top:10px;">
+        	<div>
+            	<p style="text-align: right; /">  
+				@if((flash.get("pageAction")).equals("MODIFY")){
+					<input type="submit" class="btn btn-large btn-success" @display style="padding-right:40px; padding-left:40px; text-align:center;">&nbsp;&nbsp;
+					
+				}
+ 				</p>
+		    </div>
+        </div>
+       
+    
+  
+
+
+	</form>
+	
+	</div>
+	</div>
+
+}<!-- main end -->
